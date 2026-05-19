@@ -1,9 +1,9 @@
 name: flutter_utils
 description: "Flutter常用工具集合 - 提供字符串处理、日期格式化、Widget扩展、验证工具等功能"
 version: 0.1.0
-homepage: https://github.com/yourusername/flutter_utils
-repository: https://github.com/yourusername/flutter_utils
-issue_tracker: https://github.com/yourusername/flutter_utils/issues
+homepage: https://github.com/dxmwl/flutter_utils
+repository: https://github.com/dxmwl/flutter_utils
+issue_tracker: https://github.com/dxmwl/flutter_utils/issues
 
 environment:
   sdk: ^3.11.3
