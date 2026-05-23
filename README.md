@@ -1,6 +1,6 @@
-# flutter_utils
+# tools_box
 
-[![Pub Version](https://img.shields.io/pub/v/flutter_utils)](https://pub.dev/packages/flutter_utils)
+[![Pub Version](https://img.shields.io/pub/v/tools_box)](https://pub.dev/packages/tools_box)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Dart SDK](https://img.shields.io/badge/sdk-%5E3.11.3-blue.svg)](https://dart.dev)
 [![Flutter](https://img.shields.io/badge/flutter-%3E%3D1.17.0-blue.svg)](https://flutter.dev)
@@ -23,13 +23,13 @@ Flutter 常用工具集合，提供字符串处理、日期格式化、Widget �
 
 ```yaml
 dependencies:
-  flutter_utils: ^0.1.0
+  tools_box: ^0.1.0
 ```
 
 ### 导入包
 
 ```dart
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 ```
 
 ## 📖 Usage
@@ -37,7 +37,7 @@ import 'package:flutter_utils/flutter_utils.dart';
 ### 1️⃣ 字符串工具 (StringUtils)
 
 ```dart
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 
 // 邮箱验证
 'test@example.com'.isEmail; // true
@@ -74,7 +74,7 @@ import 'package:flutter_utils/flutter_utils.dart';
 ### 2️⃣ 日期时间工具 (DateUtils)
 
 ```dart
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 
 final now = DateTime.now();
 
@@ -108,7 +108,7 @@ final days = DateUtils.daysInRange(start, end); // 返回5天的列表
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 
 // 快速添加 padding
 Text('Hello').paddingAll(16);
@@ -179,7 +179,7 @@ Text('链式调用示例')
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 
 class MyWidget extends StatelessWidget {
   @override
@@ -221,7 +221,7 @@ class MyWidget extends StatelessWidget {
 ### 5️⃣ 表单验证工具 (ValidationUtils)
 
 ```dart
-import 'package:flutter_utils/flutter_utils.dart';
+import 'package:tools_box/tools_box.dart';
 
 // 基础验证
 ValidationUtils.isValidEmail('test@example.com'); // true
@@ -297,8 +297,8 @@ flutter run -d edge
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/yourusername/flutter_utils.git
-cd flutter_utils
+git clone https://github.com/yourusername/tools_box.git
+cd tools_box
 ```
 
 2. 安装依赖：
@@ -325,7 +325,7 @@ flutter run
 flutter test
 
 # 运行特定测试文件
-flutter test test/flutter_utils_test.dart
+flutter test test/tools_box_test.dart
 
 # 生成覆盖率报告
 flutter test --coverage
@@ -383,8 +383,8 @@ flutter analyze
 
 ## 📞 联系方式
 
-- 问题反馈：[GitHub Issues](https://github.com/yourusername/flutter_utils/issues)
-- 功能建议：[GitHub Discussions](https://github.com/yourusername/flutter_utils/discussions)
+- 问题反馈：[GitHub Issues](https://github.com/yourusername/tools_box/issues)
+- 功能建议：[GitHub Discussions](https://github.com/yourusername/tools_box/discussions)
 
 ---
 
