@@ -280,10 +280,10 @@ TextFormField(
 
 ## 🎯 示例应用
 
-查看 `example_app` 目录获取完整的使用示例：
+查看 `example` 目录获取完整的使用示例：
 
 ```bash
-cd example_app
+cd example
 flutter run -d edge
 ```
 
@@ -313,7 +313,7 @@ flutter test
 
 4. 启动示例应用：
 ```bash
-cd example_app
+cd example
 flutter pub get
 flutter run
 ```

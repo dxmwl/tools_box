@@ -90,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 完整的 README.md 文档
 - 详细的使用示例和 API 文档
 - 开发指南和贡献指南
-- 创建示例应用 (example_app)
+- 创建示例应用 (example)
 
 ### 🔧 Project Setup（项目配置）
 - 更新 pubspec.yaml 配置

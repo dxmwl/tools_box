@@ -1,715 +1,420 @@
-# Tools Box - Code Wiki 文档
+# tools_box - Code Wiki 文档
 
-> **项目版本**: 0.1.0
-> **最后更新**: 2024-01-15
-> **文档生成日期**: 2026-05-23
+> **版本**: 0.1.0 | **最后更新**: 2024-01-15 | **许可证**: MIT
 
 ---
 
 ## 📋 目录
 
-- [1. 项目概述](#1-项目概述)
-- [2. 项目架构](#2-项目架构)
-- [3. 目录结构详解](#3-目录结构详解)
-- [4. 核心模块详解](#4-核心模块详解)
-  - [4.1 StringUtils（字符串工具）](#41-stringutils字符串工具)
-  - [4.2 DateUtils（日期时间工具）](#42-dateutils日期时间工具)
-  - [4.3 WidgetExtensions（Widget扩展方法）](#43-widgetextensionswidget扩展方法)
-  - [4.4 BuildContextExtensions（BuildContext扩展）](#44-buildcontextextensionsbuildcontext扩展)
-  - [4.5 ValidationUtils（表单验证工具）](#45-validationutils表单验证工具)
-- [5. 模块依赖关系](#5-模块依赖关系)
-- [6. 配置文件说明](#6-配置文件说明)
-- [7. 测试策略与覆盖](#7-测试策略与覆盖)
-- [8. CI/CD 流水线](#8-cicd-流水线)
-- [9. 项目运行方式](#9-项目运行方式)
-- [10. API 快速参考](#10-api-快速参考)
-- [11. 最佳实践与使用建议](#11-最佳实践与使用建议)
-- [12. 路线图与未来规划](#12-路线图与未来规划)
+- [项目概述](#-项目概述)
+- [技术架构](#-技术架构)
+  - [整体架构图](#整体架构图)
+  - [目录结构](#目录结构)
+- [核心模块详解](#-核心模块详解)
+  - [1. StringUtils（字符串工具）](#1-stringutils字符串工具)
+  - [2. DateUtils（日期时间工具）](#2-dateutils日期时间工具)
+  - [3. WidgetExtensions & BuildContextExtensions（UI扩展）](#3-widgetextensions--buildcontextextensionsui扩展)
+  - [4. ValidationUtils（表单验证工具）](#4-validationutils表单验证工具)
+- [依赖关系分析](#-依赖关系分析)
+- [API 参考文档](#-api-参考文档)
+- [测试体系](#-测试体系)
+- [开发指南](#-开发指南)
+- [CI/CD 流程](#cicd-流程)
+- [示例应用](#-示例应用)
+- [最佳实践与使用建议](#-最佳实践与使用建议)
 
 ---
 
-## 1. 项目概述
+## 🎯 项目概述
 
-### 1.1 项目简介
+**tools_box** 是一个 Flutter 常用工具集合库，旨在提供开箱即用的工具方法，帮助开发者提升 Flutter 应用开发效率。
 
-**Tools Box** 是一个功能丰富的 Flutter 工具库，旨在为 Flutter 开发者提供常用的工具方法和便捷的扩展功能。该项目采用纯 Dart 实现，通过 Dart 的 **Extension（扩展）** 机制和 **静态工具类** 模式，为 String、Widget、BuildContext 等核心类型提供了大量实用的方法。
-
-### 1.2 核心特性
+### 核心特性
 
 | 特性类别 | 功能描述 |
 |---------|---------|
 | 🔤 字符串处理 | 邮箱/手机号验证、格式化、截断、反转等 |
-| 📅 日期时间 | 格式化、相对时间显示、日期范围生成等 |
-| 🎨 Widget 扩展 | 链式调用 padding、居中、圆角、装饰等 |
-| 📱 Context 扩展 | 屏幕尺寸获取、主题访问、导航、键盘控制 |
-| ✅ 表单验证 | 完整的表单验证体系，支持错误消息返回 |
+| 📅 日期格式化 | 自定义格式、相对时间显示、日期范围生成等 |
+| 🎨 Widget 扩展 | 链式调用 API，简化 UI 构建代码 |
+| 📱 Context 扩展 | 屏幕尺寸获取、主题访问、导航快捷方式等 |
+| ✅ 表单验证 | 完整的验证规则和错误消息提示 |
 
-### 1.3 技术栈
+### 项目元信息
 
-- **语言**: Dart (SDK ^3.11.3)
-- **框架**: Flutter (>=1.17.0)
-- **核心依赖**: `intl: ^0.19.0`（国际化日期格式化）
-- **开发依赖**: `flutter_test`, `flutter_lints: ^6.0.0`
-- **代码规范**: Dart Official Style Guide + flutter_lints
-
-### 1.4 项目定位
-
-这是一个 **Flutter Package（包）** 项目，可以被其他 Flutter 应用作为依赖引入。项目遵循语义化版本控制（Semantic Versioning），提供完整的文档、测试和示例应用。
+```yaml
+名称: tools_box
+描述: Flutter常用工具集合
+版本: 0.1.0
+许可证: MIT
+Dart SDK: ^3.11.3
+Flutter: >=1.17.0
+仓库: https://github.com/dxmwl/tools_box
+```
 
 ---
 
-## 2. 项目架构
+## 🏗️ 技术架构
 
-### 2.1 整体架构图
+### 整体架构图
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    tools_box (Package)                   │
+│                    tools_box Library                         │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │  StringUtils │  │  DateUtils   │  │ ValidationUtils  │   │
-│  │  (Extension) │  │   (Class)    │  │     (Class)      │   │
-│  └──────────────┘  └──────────────┘  └──────────────────┘   │
+│  ┌─────────────┐  ┌─────────────┐  ┌────────────────────┐   │
+│  │ StringUtils │  │  DateUtils  │  │ ValidationUtils    │   │
+│  │ (Extension) │  │   (Class)   │  │     (Class)        │   │
+│  └─────────────┘  └─────────────┘  └────────────────────┘   │
 │                                                              │
-│  ┌─────────────────────┐  ┌──────────────────────────────┐   │
-│  │ WidgetExtensions    │  │ BuildContextExtensions       │   │
-│  │ (Extension)         │  │ (Extension)                  │   │
-│  └─────────────────────┘  └──────────────────────────────┘   │
+│  ┌──────────────────────┐  ┌────────────────────────────┐    │
+│  │ WidgetExtensions     │  │ BuildContextExtensions     │    │
+│  │ (Extension)          │  │ (Extension)                │    │
+│  └──────────────────────┘  └────────────────────────────┘    │
 │                                                              │
 ├─────────────────────────────────────────────────────────────┤
 │                     External Dependencies                   │
 │  ┌────────────────┐  ┌──────────────────────────────────┐   │
-│  │   intl: ^0.19  │  │        Flutter SDK               │   │
-│  │  (Date Format) │  │  (Material, Widgets, etc.)       │   │
+│  │ Flutter SDK    │  │ intl (Internationalization)      │   │
+│  │ (Widget, etc.) │  │ ^0.19.0                          │   │
 │  └────────────────┘  └──────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 设计模式
+### 设计模式
 
-本项目采用了以下设计模式和编程范式：
+本项目采用以下设计模式：
 
-#### 2.2.1 Extension（扩展）模式
-利用 Dart 的 extension 机制，为现有类型添加新方法：
-- **StringUtils**: 扩展 `String` 类型
-- **WidgetExtensions**: 扩展 `Widget` 类型
-- **BuildContextExtensions**: 扩展 `BuildContext` 类型
+1. **扩展方法模式（Extension Methods）**
+   - 为 `String`、`Widget`、`BuildContext` 添加便捷方法
+   - 支持链式调用，提升代码可读性
+   - Dart 语言原生支持，零性能开销
 
-**优势**:
-- 无需修改原始类即可添加功能
-- 支持链式调用（Method Chaining）
-- 提高代码可读性和开发效率
-- 符合 Dart 语言惯用写法
+2. **工具类模式（Utility Class）**
+   - `DateUtils` 和 `ValidationUtils` 使用静态方法
+   - 无需实例化，直接通过类名调用
+   - 符合 Dart 惯用做法
 
-#### 2.2.2 静态工具类模式
-对于不依赖实例状态的工具方法，使用静态类封装：
-- **DateUtils**: 所有方法均为 static
-- **ValidationUtils**: 所有方法均为 static
+3. **门面模式（Facade Pattern）**
+   - 通过统一的 `library tools_box` 导出所有模块
+   - 用户只需导入一个包即可使用所有功能
+   - 简化了 API 的使用复杂度
 
-**优势**:
-- 无需实例化即可使用
-- 方法调用清晰明确：`ClassName.methodName()`
-- 便于组织和查找相关功能
-
-#### 2.2.3 Facade（外观）模式
-通过统一的入口文件 [tools_box.dart](lib/tools_box.dart) 导出所有模块：
-
-```dart
-library tools_box;
-
-export 'src/string_utils.dart';
-export 'src/date_utils.dart';
-export 'src/widget_extensions.dart';
-export 'src/validation_utils.dart';
-```
-
-**用户只需一行导入即可使用全部功能**:
-```dart
-import 'package:tools_box/tools_box.dart';
-```
-
-### 2.3 代码组织原则
-
-1. **单一职责**: 每个文件只负责一个功能领域
-2. **高内聚低耦合**: 模块间依赖最小化
-3. **一致性**: 统一的命名规范和代码风格
-4. **可测试性**: 所有关键功能都有对应的单元测试
-5. **可扩展性**: 使用 Extension 机制便于后续扩展
-
----
-
-## 3. 目录结构详解
+### 目录结构
 
 ```
-tools_box/
+flutter_utils/
 │
-├── lib/                              # 主源码目录
-│   ├── tools_box.dart            # 包入口文件（统一导出）
-│   └── src/                          # 源码子目录
-│       ├── string_utils.dart          # 字符串扩展方法
-│       ├── date_utils.dart           # 日期时间工具类
-│       ├── widget_extensions.dart    # Widget 和 BuildContext 扩展
-│       └── validation_utils.dart     # 表单验证工具类
+├── lib/                              # 主代码目录
+│   ├── tools_box.dart               # 库入口文件（统一导出）
+│   └── src/                         # 源代码目录
+│       ├── string_utils.dart        # 字符串扩展方法
+│       ├── date_utils.dart          # 日期时间工具类
+│       ├── widget_extensions.dart   # Widget 和 Context 扩展
+│       └── validation_utils.dart    # 表单验证工具类
 │
-├── test/                             # 测试目录
-│   └── tools_box_test.dart       # 单元测试文件
+├── test/                            # 测试目录
+│   └── tools_box_test.dart         # 单元测试文件
 │
-├── example_app/                      # 示例应用
+├── example/                          # 示例应用
 │   ├── lib/
-│   │   └── main.dart                # 示例应用入口
-│   ├── android/                     # Android 平台配置
-│   ├── ios/                         # iOS 平台配置
-│   ├── linux/                       # Linux 平台配置
-│   ├── macos/                       # macOS 平台配置
-│   ├── web/                         # Web 平台配置
-│   ├── windows/                     # Windows 平台配置
-│   └── pubspec.yaml                 # 示例应用依赖配置
+│   │   └── main.dart              # 示例应用主文件
+│   ├── android/                    # Android 平台配置
+│   ├── ios/                        # iOS 平台配置
+│   ├── web/                        # Web 平台配置
+│   ├── windows/                    # Windows 平台配置
+│   ├── linux/                      # Linux 平台配置
+│   └── macos/                      # macOS 平台配置
 │
-├── .github/workflows/               # CI/CD 配置
-│   └── publish.yml                  # 自动发布到 pub.dev
+├── .github/
+│   └── workflows/
+│       └── publish.yml             # CI/CD 发布工作流
 │
-├── pubspec.yaml                     # 包配置文件
-├── analysis_options.yaml            # 代码分析规则
-├── README.md                        # 项目说明文档
-├── CHANGELOG.md                     # 版本变更日志
-├── LICENSE                          # MIT 开源许可证
-└── .metadata                        # IDE 元数据
+├── pubspec.yaml                    # 项目配置文件
+├── README.md                       # 项目说明文档
+├── CHANGELOG.md                    # 版本变更日志
+├── LICENSE                         # 许可证文件
+└── analysis_options.yaml           # 代码分析配置
 ```
-
-### 3.1 关键目录说明
-
-| 目录/文件 | 用途 | 重要程度 |
-|----------|------|---------|
-| `lib/src/` | 核心源码，包含所有功能实现 | ⭐⭐⭐⭐⭐ |
-| `lib/tools_box.dart` | 包入口，统一导出所有模块 | ⭐⭐⭐⭐⭐ |
-| `test/` | 单元测试，保证代码质量 | ⭐⭐⭐⭐ |
-| `example_app/` | 示例应用，展示实际用法 | ⭐⭐⭐⭐ |
-| `.github/workflows/` | CI/CD 自动化流程 | ⭐⭐⭐ |
 
 ---
 
-## 4. 核心模块详解
+## 📦 核心模块详解
 
-### 4.1 StringUtils（字符串工具）
+### 1. StringUtils（字符串工具）
 
 **文件位置**: [lib/src/string_utils.dart](lib/src/string_utils.dart)
 
-**类型**: Extension on String
+**类型**: Dart Extension on `String`
 
-**职责**: 为 String 类型提供常用的验证、格式化和转换方法
+**职责**: 为 String 类型提供常用的字符串处理和验证功能。
 
-#### 4.1.1 类定义
+#### 核心属性和方法
 
-```dart
-extension StringUtils on String { ... }
-```
+| 方法/属性 | 类型 | 描述 | 示例 |
+|----------|------|------|------|
+| `isEmail` | `bool` (getter) | 验证邮箱格式 | `'a@b.com'.isEmail` → `true` |
+| `isPhoneNumber` | `bool` (getter) | 验证中国手机号（11位，1开头） | `'13812345678'.isPhoneNumber` → `true` |
+| `capitalize` | `String` (getter) | 首字母大写 | `'hello'.capitalize` → `'Hello'` |
+| `capitalizeAllOf` | `String` (getter) | 每个单词首字母大写 | `'hello world'.capitalizeAllOf` → `'Hello World'` |
+| `isNumeric` | `bool` (getter) | 判断是否为数字字符串 | `'123'.isNumeric` → `true` |
+| `reverse` | `String` (getter) | 字符串反转 | `'abc'.reverse` → `'cba'` |
+| `nullIfEmpty` | `String?` (getter) | 空字符串返回 null | `''.nullIfEmpty` → `null` |
+| `removeWhitespace` | `String` (getter) | 移除所有空白字符 | `'a b c'.removeWhitespace` → `'abc'` |
+| `isURL` | `bool` (getter) | 验证 URL 格式 | `'https://a.com'.isURL` → `true` |
+| `truncate(int length, {String suffix})` | 方法 | 截断字符串并添加后缀 | `'long text'.truncate(5)` → `'long t...'` |
 
-#### 4.1.2 方法清单
-
-##### 验证类方法（Getter）
-
-| 方法名 | 返回类型 | 说明 | 示例 |
-|--------|---------|------|------|
-| `isEmail` | `bool` | 验证是否为邮箱格式 | `'a@b.com'.isEmail` → `true` |
-| `isPhoneNumber` | `bool` | 验证是否为中国手机号（1开头，11位） | `'13812345678'.isPhoneNumber` → `true` |
-| `isNumeric` | `bool` | 判断字符串是否可转换为数字 | `'123'.isNumeric` → `true` |
-| `isURL` | `bool` | 验证是否为有效的 HTTP/HTTPS URL | `'https://a.com'.isURL` → `true` |
-
-##### 格式化转换方法（Getter）
-
-| 方法名 | 返回类型 | 说明 | 示例 |
-|--------|---------|------|------|
-| `capitalize` | `String` | 首字母大写 | `'hello'.capitalize` → `'Hello'` |
-| `capitalizeAllOf` | `String` | 每个单词首字母大写 | `'hello world'.capitalizeAllOf` → `'Hello World'` |
-| `reverse` | `String` | 字符串反转 | `'abc'.reverse` → `'cba'` |
-| `removeWhitespace` | `String` | 移除所有空白字符 | `' a b '.removeWhitespace` → `'ab'` |
-| `nullIfEmpty` | `String?` | 空字符串转为 null | `''.nullIfEmpty` → `null` |
-
-##### 工具方法（Function）
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `truncate(int length, {String suffix = '...'})` | 截断长度，后缀（可选） | `String` | 超长字符串截断 |
-
-**示例**:
-```dart
-'Hello World'.truncate(5);  // 'Hello...'
-'Hi'.truncate(5);           // 'Hi'（不超过长度则原样返回）
-```
-
-#### 4.1.3 实现细节
+#### 实现细节
 
 **邮箱验证逻辑**:
 ```dart
 bool get isEmail => contains('@') && contains('.');
 ```
-- 简单实现：仅检查是否包含 @ 和 .
-- 适用场景：快速初步验证
-- 注意：不进行完整的 RFC 5322 邮箱格式校验
+> ⚠️ **注意**: 当前实现为简单验证，仅检查是否包含 `@` 和 `.`。生产环境建议使用更严格的正则表达式。
 
-**手机号验证逻辑**:
+**手机号验证正则**:
 ```dart
-bool get isPhoneNumber => RegExp(r'^1[3-9]\d{9}$').hasMatch(this);
+RegExp(r'^1[3-9]\d{9}$')
 ```
-- 正则表达式解析：
-  - `^` : 字符串开始
-  - `1`: 必须以 1 开头
-  - `[3-9]`: 第二位为 3-9（中国手机号段）
-  - `\d{9}`: 后接 9 位数字
-  - `$`: 字符串结束
-- 总长度：11 位数字
+- 匹配规则: 以 1 开头，第二位是 3-9，后面跟 9 位数字
+- 总长度: 11 位
+- 适用范围: 中国大陆手机号
 
 **URL 验证正则**:
 ```dart
 r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$'
 ```
-- 支持 http 和 https
-- 可选 www. 前缀
+- 支持 http 和 https 协议
+- 支持可选的 www 子域名
 - 支持查询参数和路径
 
-#### 4.1.4 使用场景
+#### 使用场景
 
-- **表单输入验证**: 用户输入的邮箱、手机号快速检查
-- **文本格式化**: 显示名称、标题的首字母大写处理
-- **数据处理**: 清理用户输入的空白字符
-- **UI 文本展示**: 超长文本截断显示省略号
+- 表单输入验证（邮箱、手机号）
+- 文本格式化和展示（首字母大写、截断）
+- 数据清洗（移除空白字符）
+- URL 有效性检查
 
 ---
 
-### 4.2 DateUtils（日期时间工具）
+### 2. DateUtils（日期时间工具）
 
 **文件位置**: [lib/src/date_utils.dart](lib/src/date_utils.dart)
 
-**类型**: Static Class（静态工具类）
+**类型**: 工具类（Static Class）
 
-**职责**: 提供日期格式化、相对时间计算、日期范围生成等功能
+**依赖**: `intl: ^0.19.0`
 
-#### 4.2.1 类定义
+**职责**: 提供日期格式化、相对时间计算、日期范围生成等功能。
+
+#### 核心方法
+
+| 方法 | 返回类型 | 参数 | 描述 |
+|------|---------|------|------|
+| `formatDate(DateTime, {String pattern})` | `String` | date, pattern (默认 'yyyy-MM-dd') | 格式化日期 |
+| `formatDateTime(DateTime, {String pattern})` | `String` | date, pattern (默认 'yyyy-MM-dd HH:mm:ss') | 格式化日期时间 |
+| `timeAgo(DateTime)` | `String` | date | 计算相对时间（中文） |
+| `isToday(DateTime)` | `bool` | date | 判断是否为今天 |
+| `isYesterday(DateTime)` | `bool` | date | 判断是否为昨天 |
+| `startOfDay(DateTime)` | `DateTime` | date | 获取当天开始时间 (00:00:00) |
+| `endOfDay(DateTime)` | `DateTime` | date | 获取当天结束时间 (23:59:59) |
+| `daysInRange(DateTime start, DateTime end)` | `List<DateTime>` | start, end | 生成日期范围内的列表 |
+
+#### 实现细节
+
+**相对时间算法** (`timeAgo`):
 
 ```dart
-class DateUtils {
-  // 所有方法均为 static
-}
-```
-
-**外部依赖**: `package:intl/intl.dart`（用于 DateFormat）
-
-#### 4.2.2 方法清单
-
-##### 格式化方法
-
-| 方法名 | 参数 | 返回类型 | 默认格式 | 说明 |
-|--------|------|---------|---------|------|
-| `formatDate(DateTime date, {String pattern})` | 日期对象，格式模式 | `String` | `'yyyy-MM-dd'` | 日期格式化 |
-| `formatDateTime(DateTime date, {String pattern})` | 日期对象，格式模式 | `String` | `'yyyy-MM-dd HH:mm:ss'` | 日期时间格式化 |
-
-**支持的格式模式示例**:
-```dart
-DateUtils.formatDate(date);                           // '2024-01-15'
-DateUtils.formatDate(date, pattern: 'yyyy年MM月dd日'); // '2024年01月15日'
-DateUtils.formatDateTime(date);                       // '2024-01-15 14:30:00'
-DateUtils.formatDateTime(date, pattern: 'MM/dd HH:mm'); // '01/15 14:30'
-```
-
-##### 相对时间方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `timeAgo(DateTime date)` | 目标日期 | `String` | 计算相对当前时间的中文描述 |
-
-**返回值规则**:
-
-| 时间差 | 返回值 |
-|--------|--------|
-| > 365 天 | `X年前` |
-| > 30 天 | `X个月前` |
-> 0 天 | `X天前` |
-> 0 小时 | `X小时前` |
-> 0 分钟 | `X分钟前` |
-其他 | `刚刚` |
-
-**示例**:
-```dart
-final now = DateTime.now();
-DateUtils.timeAgo(now.subtract(Duration(minutes: 5)));  // '5分钟前'
-DateUtils.timeAgo(now.subtract(Duration(hours: 2)));    // '2小时前'
-DateUtils.timeAgo(now.subtract(Duration(days: 1)));     // '1天前'
-DateUtils.timeAgo(now.subtract(Duration(days: 400)));   // '1年前'
-```
-
-##### 判断方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `isToday(DateTime date)` | 日期 | `bool` | 是否为今天 |
-| `isYesterday(DateTime date)` | 日期 | `bool` | 是否为昨天 |
-
-**实现原理**:
-```dart
-static bool isToday(DateTime date) {
+static String timeAgo(DateTime date) {
   final now = DateTime.now();
-  return date.year == now.year &&
-      date.month == now.month &&
-      date.day == now.day;
-}
+  final difference = now.difference(date);
 
-static bool isYesterday(DateTime date) {
-  final yesterday = DateTime.now().subtract(Duration(days: 1));
-  return date.year == yesterday.year &&
-      date.month == yesterday.month &&
-      date.day == yesterday.day;
-}
-```
-
-##### 边界计算方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `startOfDay(DateTime date)` | 日期 | `DateTime` | 当天 00:00:00 |
-| `endOfDay(DateTime date)` | 日期 | `DateTime` | 当天 23:59:59 |
-
-**示例**:
-```dart
-final date = DateTime(2024, 1, 15, 14, 30, 0);
-DateUtils.startOfDay(date);  // DateTime(2024, 1, 15, 0, 0, 0)
-DateUtils.endOfDay(date);    // DateTime(2024, 1, 15, 23, 59, 59)
-```
-
-##### 范围生成方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `daysInRange(DateTime start, DateTime end)` | 开始日期，结束日期 | `List<DateTime>` | 生成日期列表（含首尾） |
-
-**算法**:
-```dart
-static List<DateTime> daysInRange(DateTime start, DateTime end) {
-  final days = <DateTime>[];
-  var current = start;
-  while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
-    days.add(current);
-    current = current.add(Duration(days: 1));
+  if (difference.inDays > 365) {
+    return '${(difference.inDays / 365).floor()}年前';
+  } else if (difference.inDays > 30) {
+    return '${(difference.inDays / 30).floor()}个月前';
+  } else if (difference.inDays > 0) {
+    return '${difference.inDays}天前';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}小时前';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}分钟前';
+  } else {
+    return '刚刚';
   }
-  return days;
 }
 ```
 
-**示例**:
-```dart
-final start = DateTime(2024, 1, 1);
-final end = DateTime(2024, 1, 3);
-final days = DateUtils.daysInRange(start, end);
-// [
-//   DateTime(2024, 1, 1),
-//   DateTime(2024, 1, 2),
-//   DateTime(2024, 1, 3)
-// ]
-```
+**优先级判断顺序**:
+1. 年 (>365天)
+2. 月 (>30天)
+3. 天 (>0天)
+4. 小时 (>0小时)
+5. 分钟 (>0分钟)
+6. 刚刚 (其他情况)
 
-#### 4.2.3 使用场景
+**日期格式化**:
+- 使用 `intl` 包的 `DateFormat` 类
+- 支持自定义格式模式
+- 默认格式: `yyyy-MM-dd` 和 `yyyy-MM-dd HH:mm:ss`
 
-- **社交应用**: 显示"5分钟前"、"2小时前"等相对时间
-- **日历组件**: 生成月份视图所需的日期列表
-- **数据筛选**: 按今天/昨天筛选数据
-- **报表系统**: 按天统计数据的边界计算
-- **消息应用**: 时间戳人性化显示
+#### 使用场景
+
+- 社交媒体时间线（"5分钟前"、"2小时前"）
+- 日历应用日期范围选择
+- 日志记录时间戳格式化
+- 数据统计按天/月/年分组
 
 ---
 
-### 4.3 WidgetExtensions（Widget 扩展方法）
+### 3. WidgetExtensions & BuildContextExtensions（UI 扩展）
 
 **文件位置**: [lib/src/widget_extensions.dart](lib/src/widget_extensions.dart)
 
-**类型**: Extension on Widget + Extension on BuildContext
+**类型**: Dart Extension on `Widget` and `BuildContext`
 
-**职责**: 为 Widget 提供链式调用的便捷方法，简化 UI 构建代码
+**依赖**: Flutter SDK (`material.dart`, `widgets.dart`)
 
-#### 4.3.1 WidgetExtensions（Widget 扩展）
+**职责**: 为 Widget 和 BuildContext 提供便捷的链式调用方法，简化 UI 构建代码。
 
-##### 布局方法
+#### WidgetExtensions 方法列表
 
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `paddingAll(double value)` | 内边距值 | `Padding` | 四周等距内边距 |
-| `paddingSymmetric({double horizontal, double vertical})` | 水平/垂直内边距 | `Padding` | 对称内边距 |
-| `only({double left, top, right, bottom})` | 各方向内边距 | `Padding` | 自定义方向内边距 |
+| 方法 | 返回类型 | 参数 | 描述 |
+|------|---------|------|------|
+| `paddingAll(double value)` | `Padding` | value | 四周等距内边距 |
+| `paddingSymmetric({double horizontal, double vertical})` | `Padding` | horizontal, vertical | 水平/垂直内边距 |
+| `only({double left, top, right, bottom})` | `Padding` | left, top, right, bottom | 自定义方向内边距 |
+| `center()` | `Center` | 无 | 居中对齐 |
+| `align({Alignment alignment})` | `Align` | alignment (默认 center) | 自定义对齐方式 |
+| `expand({int flex})` | `Expanded` | flex (默认 1) | Expanded 包裹 |
+| `flexible({int flex, FlexFit fit})` | `Flexible` | flex, fit | Flexible 包裹 |
+| `positioned({double? left, top, right, bottom})` | `Positioned` | left, top, right, bottom | 绝对定位（用于 Stack） |
+| `onTap(VoidCallback onTap)` | `GestureDetector` | onTap | 添加点击事件 |
+| `sizedBox({double? width, double? height})` | `SizedBox` | width, height | 设置固定尺寸 |
+| `clipRRect({double radius})` | `ClipRRect` | radius (默认 8) | 圆角裁剪 |
+| `decorated({required BoxDecoration decoration, DecorationPosition position})` | `DecoratedBox` | decoration, position | 添加装饰（背景、边框等） |
+| `opacity(double opacity)` | `Opacity` | opacity | 设置透明度 (0.0-1.0) |
+| `safeArea({bool top, bool bottom})` | `SafeArea` | top, bottom | 安全区域适配 |
+| `hero(Object tag)` | `Hero` | tag | Hero 动画标签 |
+| `tooltip(String message)` | `Tooltip` | message | 悬停提示信息 |
+| `visible(bool visible, {Widget? replacement})` | `Visibility` | visible, replacement | 控制显隐状态 |
 
-**示例**:
+#### BuildContextExtensions 属性和方法
+
+| 属性/方法 | 类型 | 描述 |
+|----------|------|------|
+| `screenWidth` | `double` (getter) | 获取屏幕宽度 |
+| `screenHeight` | `double` (getter) | 获取屏幕高度 |
+| `theme` | `ThemeData` (getter) | 获取主题数据 |
+| `textTheme` | `TextTheme` (getter) | 获取文本主题 |
+| `colorScheme` | `ColorScheme` (getter) | 获取颜色方案 |
+| `isKeyboardVisible` | `bool` (getter) | 判断键盘是否可见 |
+| `isDarkMode` | `bool` (getter) | 判断是否为暗色模式 |
+| `hideKeyboard()` | `void` | 隐藏键盘 |
+| `showSnackBar(String message)` | `void` | 显示 SnackBar 提示 |
+| `push<T>(WidgetBuilder builder)` | `Future<T?>` | 页面导航跳转 |
+| `pop<T>([T? result])` | `void` | 页面返回 |
+
+#### 链式调用示例
+
 ```dart
-Text('Hello')
-    .paddingAll(16)                                      // 四周16px
-    .paddingSymmetric(horizontal: 20, vertical: 10)      // 水平20px，垂直10px
-    .only(left: 16, right: 16);                          // 仅左右16px
-```
-
-##### 对齐和布局包裹方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `center()` | 无 | `Center` | 居中对齐 |
-| `align({Alignment alignment})` | 对齐方式（默认居中） | `Align` | 自定义对齐 |
-| `expand({int flex})` | 弹性系数（默认1） | `Expanded` | Expanded 包裹 |
-| `flexible({int flex, FlexFit fit})` | 弹性系数，适配方式 | `Flexible` | Flexible 包裹 |
-
-**示例**:
-```dart
-Text('Centered').center();
-Container().expand(flex: 2);  // 占据 2 份空间
-Container().flexible(flex: 1, fit: FlexFit.tight);
-```
-
-##### 定位和交互方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `positioned({double? left, top, right, bottom})` | 各方向偏移量 | `Positioned` | 绝对定位（需在 Stack 中使用） |
-| `onTap(VoidCallback onTap)` | 点击回调 | `GestureDetector` | 添加点击事件 |
-
-**示例**:
-```dart
-Icon(Icons.star).onTap(() => print('clicked!'));
-Text('Positioned').positioned(top: 10, left: 10);
-```
-
-##### 尺寸和样式方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `sizedBox({double? width, height})` | 宽高 | `SizedBox` | 设置固定尺寸 |
-| `clipRRect({double radius})` | 圆角半径（默认8） | `ClipRRect` | 圆角裁剪 |
-| `decorated({required BoxDecoration decoration, DecorationPosition position})` | 装饰配置 | `DecoratedBox` | 添加背景、边框等 |
-| `opacity(double opacity)` | 透明度（0-1） | `Opacity` | 设置透明度 |
-
-**示例**:
-```dart
-Text('Sized').sizedBox(width: 200, height: 100);
-Image.network(url).clipRRect(radius: 12);
-Text('Decorated')
+Text('链式调用')
+    .paddingAll(16)                    // 添加内边距
+    .center()                          // 居中显示
+    .onTap(() => handleTap())         // 点击事件
     .decorated(decoration: BoxDecoration(
-      color: Colors.blue,
-      borderRadius: BorderRadius.circular(8),
-    ));
-Text('Transparent').opacity(0.5);
+      color: Colors.blue.shade50,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.blue),
+    ))
+    .clipRRect(radius: 12);           // 圆角裁剪
 ```
 
-##### 其他包装方法
+**优势对比**:
 
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `safeArea({bool top, bottom})` | 是否避开顶部/底部（默认 true） | `SafeArea` | 安全区域适配 |
-| `hero(Object tag)` | Hero 标签 | `Hero` | Hero 动画标签 |
-| `tooltip(String message)` | 提示文字 | `Tooltip` | 长按提示信息 |
-| `visible(bool visible, {Widget? replacement})` | 是否可见，替代 widget | `Visibility` | 控制显隐 |
-
-**示例**:
-```dart
-Column(children: [Text('Safe')]).safeArea();
-Image.asset(photo).hero('photo_hero');
-Icon(Icons.info).tooltip('这是一个提示');
-Text('Visible').visible(true);
-Text('Hidden').visible(false, replacement: SizedBox());
-```
-
-#### 4.3.2 BuildContextExtensions（BuildContext 扩展）
-
-##### 属性访问 Getter
-
-| 属性名 | 返回类型 | 说明 |
-|--------|---------|------|
-| `screenWidth` | `double` | 屏幕宽度（逻辑像素） |
-| `screenHeight` | `double` | 屏幕高度（逻辑像素） |
-| `theme` | `ThemeData` | 当前主题数据 |
-| `textTheme` | `textTheme` | 文本主题 |
-| `colorScheme` | `ColorScheme` | 颜色方案 |
-| `isKeyboardVisible` | `bool` | 键盘是否可见 |
-| `isDarkMode` | `bool` | 是否为暗色模式 |
-
-**实现示例**:
-```dart
-double get screenWidth => MediaQuery.of(this).size.width;
-bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
-bool get isKeyboardVisible => MediaQuery.of(this).viewInsets.bottom > 0;
-```
-
-##### 操作方法
-
-| 方法名 | 参数 | 返回类型 | 说明 |
-|--------|------|---------|------|
-| `hideKeyboard()` | 无 | `void` | 收起键盘 |
-| `showSnackBar(String message)` | 提示信息 | `void` | 显示 SnackBar |
-| `push<T>(WidgetBuilder builder)` | 页面构建器 | `Future<T?>` | 页面跳转 |
-| `pop<T>([T? result])` | 返回结果（可选） | `void` | 页面返回 |
-
-**示例**:
-```dart
-// 在 StatelessWidget 中使用
-class MyWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final width = context.screenWidth;
-    
-    if (context.isDarkMode) {
-      // 暗色主题逻辑
-    }
-    
-    context.hideKeyboard();
-    context.showSnackBar('操作成功！');
-    context.push((context) => DetailPage());
-    context.pop();
-    
-    return Container();
-  }
-}
-```
-
-#### 4.3.3 链式调用优势
-
-WidgetExtensions 的最大优势是支持**链式调用**，大幅提升代码可读性：
+传统写法 vs 扩展方法写法：
 
 ```dart
-// 传统写法
+// ❌ 传统写法（嵌套层级深）
 Padding(
   padding: EdgeInsets.all(16),
   child: Center(
     child: GestureDetector(
-      onTap: () => print('tapped!'),
+      onTap: () => handleTap(),
       child: Text('Hello'),
     ),
   ),
 )
 
-// 链式调用写法
+// ✅ 扩展方法写法（扁平化、可读性强）
 Text('Hello')
     .paddingAll(16)
     .center()
-    .onTap(() => print('tapped!'))
+    .onTap(() => handleTap());
 ```
 
-**优势对比**:
-- ✅ 减少嵌套层级，避免"回调地狱"
-- ✅ 代码更简洁，阅读顺序从左到右、从上到下
-- ✅ 易于修改和调整 UI 结构
-- ✅ 符合现代 Flutter 开发趋势（如 styled_widget 等包的设计理念）
+#### 使用场景
+
+- 快速原型开发和 UI 构建
+- 减少嵌套层级，提高代码可读性
+- 统一 UI 样式的快速应用
+- 响应式布局中的尺寸和对齐控制
 
 ---
 
-### 4.4 BuildContextExtensions（BuildContext 扩展）
-
-**已在 4.3.2 节详细说明**，此处补充设计理念和使用最佳实践。
-
-#### 4.4.1 设计理念
-
-BuildContext 是 Flutter 中最重要的上下文对象，它提供了：
-- **MediaQuery 数据**: 屏幕尺寸、键盘状态等
-- **Theme 数据**: 主题、颜色方案、文本样式
-- **Navigator 导航**: 页面跳转和返回
-- **ScaffoldMessenger**: SnackBar 显示
-
-通过扩展 BuildContext，开发者可以：
-- 避免重复编写 `MediaQuery.of(context)` 等样板代码
-- 以属性方式访问常用数据（如 `context.screenWidth`）
-- 简化导航和交互操作（如 `context.push()`、`context.showSnackBar()`）
-
-#### 4.4.2 性能注意事项
-
-所有 BuildContext 扩展都是 **Getter 或 Method**，不会缓存结果，每次访问都会重新查询 InheritedWidget。
-
-**建议**:
-- 在 `build` 方法中频繁使用的值（如 theme），可以保存到局部变量
-- 对于屏幕尺寸等不常变化的值，无需担心性能问题
-
-```dart
-@override
-Widget build(BuildContext context) {
-  final theme = context.theme;  // 缓存到局部变量
-  final screenWidth = context.screenWidth;
-  
-  return Container(
-    color: theme.primaryColor,
-    width: screenWidth,
-  );
-}
-```
-
----
-
-### 4.5 ValidationUtils（表单验证工具）
+### 4. ValidationUtils（表单验证工具）
 
 **文件位置**: [lib/src/validation_utils.dart](lib/src/validation_utils.dart)
 
-**类型**: Static Class（静态工具类）
+**类型**: 工具类（Static Class）
 
-**职责**: 提供完整的数据验证功能，包括基础验证和表单验证（带错误消息）
+**职责**: 提供完整的表单验证功能，包括基础验证和带错误消息的验证。
 
-#### 4.5.1 类定义
+#### 验证方法分类
 
+##### A. 基础验证方法（返回 bool）
+
+| 方法 | 参数 | 返回值 | 描述 |
+|------|------|--------|------|
+| `isValidEmail(String email)` | email | `bool` | 邮箱格式验证 |
+| `isValidPhone(String phone)` | phone | `bool` | 中国手机号验证 |
+| `isValidPassword(String password, {int minLength})` | password, minLength (默认6) | `bool` | 密码长度验证 |
+| `isValidURL(String url)` | url | `bool` | URL 格式验证 |
+| `isValidIDCard(String idCard)` | idCard | `bool` | 身份证号验证（18位） |
+| `isChinese(String text)` | text | `bool` | 中文字符检测 |
+| `containsOnlyNumbers(String text)` | text | `bool` | 纯数字检测 |
+| `containsOnlyLetters(String text)` | text | `bool` | 纯字母检测 |
+| `containsOnlyLettersAndNumbers(String text)` | text | `bool` | 字母数字组合检测 |
+
+##### B. 表单验证方法（返回 String?）
+
+| 方法 | 参数 | 返回值 | 描述 |
+|------|------|--------|------|
+| `validateEmail(String? value)` | value | `String?` (错误消息或 null) | 邮箱验证（用于 TextFormField） |
+| `validatePhone(String? value)` | value | `String?` | 手机号验证 |
+| `validatePassword(String? value, {int minLength})` | value, minLength | `String?` | 密码验证 |
+| `validateRequired(String? value, {String fieldName})` | value, fieldName (默认'此字段') | `String?` | 必填字段验证 |
+
+#### 正则表达式参考
+
+**邮箱验证正则**:
 ```dart
-class ValidationUtils {
-  // 所有方法均为 static
-}
-```
-
-#### 4.5.2 方法分类
-
-##### 第一类：基础验证方法（返回 bool）
-
-这些方法用于简单的真值判断，适合条件语句：
-
-| 方法名 | 参数 | 返回类型 | 验证规则 |
-|--------|------|---------|---------|
-| `isValidEmail(String email)` | 邮箱字符串 | `bool` | 标准邮箱格式 |
-| `isValidPhone(String phone)` | 手机号字符串 | `bool` | 中国手机号（11位，1开头） |
-| `isValidPassword(String password, {int minLength})` | 密码字符串，最小长度（默认6） | `bool` | 长度检查 |
-| `isValidURL(String url)` | URL 字符串 | `bool` | HTTP/HTTPS URL 格式 |
-| `isValidIDCard(String idCard)` | 身份证号字符串 | `bool` | 18位中国身份证号 |
-| `isChinese(String text)` | 文本字符串 | `bool` | 包含中文字符 |
-| `containsOnlyNumbers(String text)` | 文本字符串 | `bool` | 纯数字 |
-| `containsOnlyLetters(String text)` | 文本字符串 | `bool` | 纯字母 |
-| `containsOnlyLettersAndNumbers(String text)` | 文本字符串 | `bool` | 字母和数字组合 |
-
-**正则表达式详情**:
-
-```dart
-// 邮箱验证（更严格版）
 r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
-
-// 身份证号验证（18位）
-r'^[1-9]\d{5}(18\|19\|20)\d{2}(0[1-9]\|1[0-2])(0[1-9]\|[12]\d\|3[01])\d{3}[\dXx]$'
-
-// 解析：
-// [1-9]\d{5          - 地区码（6位，不能以0开头）
-// (18|19|20)\d{2     - 出生年份（4位，1800-2099）
-// (0[1-9]|1[0-2])    - 月份（01-12）
-// (0[1-9]|[12]\d|3[01]) - 日期（01-31）
-// \d{3}[ \dXx]        - 顺序码（3位）+ 校验码（1位，数字或X）
 ```
+- 支持字母、数字、下划线、连字符、点号
+- 域名部分支持多级子域名
+- 顶级域名 2-4 位
 
-##### 第二类：表单验证方法（返回 String?）
-
-这些方法专门用于 **TextFormField 的 validator**，返回 `null` 表示验证通过，否则返回错误消息：
-
-| 方法名 | 参数 | 返回类型 | 错误消息 |
-|--------|------|---------|---------|
-| `validateEmail(String? value)` | 待验证值 | `String?` | `'邮箱不能为空'` / `'请输入有效的邮箱地址'` |
-| `validatePhone(String? value)` | 待验证值 | `String?` | `'手机号不能为空'` / `'请输入有效的手机号码'` |
-| `validatePassword(String? value, {int minLength})` | 待验证值，最小长度 | `String?` | `'密码不能为空'` / `'密码长度至少需要X位'` |
-| `validateRequired(String? value, {String fieldName})` | 待验证值，字段名（默认'此字段'） | `String?` | `'X不能为空'` |
-
-**验证流程**:
+**身份证号验证正则**:
 ```dart
-static String? validateEmail(String? value) {
-  if (value == null || value.isEmpty) {
-    return '邮箱不能为空';           // 第一步：检查空值
-  }
-  if (!isValidEmail(value)) {
-    return '请输入有效的邮箱地址';     // 第二步：格式验证
-  }
-  return null;                        // 第三步：验证通过
-}
+r'^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dXx]$'
 ```
+- 18 位身份证号
+- 支持 18xx、19xx、20xx 年份
+- 最后一位可以是数字或 X/x
+- 校验码验证（当前实现未包含校验码算法）
 
-#### 4.5.3 在 TextFormField 中的使用
+#### 在 Flutter Form 中使用
 
 ```dart
 TextFormField(
@@ -723,268 +428,243 @@ TextFormField(
 )
 
 TextFormField(
-  decoration: InputDecoration(labelText: '密码'),
   obscureText: true,
+  decoration: InputDecoration(labelText: '密码'),
   validator: (value) => ValidationUtils.validatePassword(value, minLength: 8),
 )
-
-TextFormField(
-  decoration: InputDecoration(labelText: '用户名'),
-  validator: (value) => ValidationUtils.validateRequired(value, fieldName: '用户名'),
-)
 ```
 
-#### 4.5.4 与 StringUtils 的区别
+#### 使用场景
 
-虽然 StringUtils 和 ValidationUtils 都提供验证功能，但它们的设计目标不同：
-
-| 特性 | StringUtils | ValidationUtils |
-|------|------------|-----------------|
-| **类型** | Extension（属性访问） | Static Class（方法调用） |
-| **调用方式** | `'text'.isEmail` | `ValidationUtils.isValidEmail('text')` |
-| **返回值** | `bool` | `bool` 或 `String?` |
-| **适用场景** | 快速判断、条件语句 | 表单验证、错误提示 |
-| **错误消息** | ❌ 不提供 | ✅ 提供中文错误消息 |
-| **验证范围** | 基础验证（email、phone、url） | 更全面（含身份证、中文检测等） |
-
-**选择建议**:
-- 需要**快速布尔判断** → 使用 StringUtils
-- 需要**表单验证 + 错误提示** → 使用 ValidationUtils
+- 用户注册/登录表单验证
+- 个人信息填写表单
+- 数据提交前的格式校验
+- 输入框实时验证反馈
 
 ---
 
-## 5. 模块依赖关系
+## 🔗 依赖关系分析
 
-### 5.1 内部模块依赖图
+### 直接依赖
 
-```
-tools_box.dart (入口)
-    │
-    ├── string_utils.dart (无内部依赖)
-    │       └── 仅依赖 Dart 核心 String 类
-    │
-    ├── date_utils.dart
-    │       └── 外部依赖: package:intl/intl.dart
-    │
-    ├── widget_extensions.dart
-    │       ├── 依赖 Flutter: material.dart, widgets.dart
-    │       └── 包含两个 Extension: WidgetExtensions + BuildContextExtensions
-    │
-    └── validation_utils.dart (无内部依赖)
-            └── 仅依赖 Dart 核心 RegExp 类
-```
+| 依赖包 | 版本 | 用途 | 类型 |
+|--------|------|------|------|
+| `flutter` | SDK | Flutter 框架核心（Widget、Material 等） | 必需 |
+| `intl` | ^0.19.0 | 国际化和日期格式化（DateFormat） | 运行时依赖 |
 
-### 5.2 外部依赖树
+### 开发依赖
+
+| 依赖包 | 版本 | 用途 |
+|--------|------|------|
+| `flutter_test` | SDK | 单元测试框架 |
+| `flutter_lints` | ^6.0.0 | Dart/Flutter 代码规范 lint 规则 |
+
+### 依赖图
 
 ```
-tools_box (0.1.0)
+tools_box (v0.1.0)
 │
 ├── flutter (SDK)
-│   └── 用于 Widget 和 BuildContext 扩展
+│   ├── widgets.dart
+│   └── material.dart
 │
-├── intl (^0.19.0)
-│   └── 用于 DateUtils 的日期格式化（DateFormat 类）
-│
-├── flutter_test (dev only)
-│   └── 用于单元测试
-│
-└── flutter_lints (^6.0.0) (dev only)
-    └── 代码风格检查规则
+└── intl (^0.19.0)
+    └── DateFormat class
 ```
 
-### 5.3 依赖详细说明
+### 为什么选择 intl？
 
-#### 5.3.1 intl 包
+`DateUtils` 使用 `intl` 包的原因：
+1. ✅ 官方推荐的国际化方案
+2. ✅ 支持自定义日期格式模式
+3. ✅ 支持本地化（Locale-aware）
+4. ✅ 成熟稳定，广泛使用
+5. ✅ 轻量级（仅使用 DateFormat 功能）
 
-**用途**: 提供国际化日期格式化功能
+### 版本兼容性
 
-**使用位置**: [date_utils.dart](lib/src/date_utils.dart#L1)
-
-**为什么需要**:
-- Dart 原生的 `DateTime.toString()` 不支持自定义格式
-- `intl` 包的 `DateFormat` 类支持灵活的模式匹配（如 `yyyy-MM-dd`）
-- 支持本地化的日期格式（虽然本项目目前仅使用中文）
-
-**版本选择**: `^0.19.0`
-- 这是一个稳定且广泛使用的版本
-- 与 Dart 3.x SDK 完全兼容
-
-#### 5.3.2 Flutter SDK
-
-**最低要求**: `>=1.17.0`
-
-**使用位置**: [widget_extensions.dart](lib/src/widget_extensions.dart#L1-L2)
-
-**导入的库**:
-- `package:flutter/material.dart` - Material Design 组件
-- `package:flutter/widgets.dart` - 基础 Widget 系统
-
-**使用的类**:
-- Padding, Center, Align, Expanded, Flexible, Positioned
-- GestureDetector, SizedBox, ClipRRect, DecoratedBox, Opacity
-- SafeArea, Hero, Tooltip, Visibility
-- MediaQuery, Theme, Navigator, ScaffoldMessenger, FocusScope
-
----
-
-## 6. 配置文件说明
-
-### 6.1 pubspec.yaml（包配置）
-
-**文件位置**: [pubspec.yaml](pubspec.yaml)
-
-**关键字段解读**:
-
-```yaml
-name: tools_box              # 包名（在 pub.dev 上的唯一标识）
-description: "Flutter常用工具集合..."  # 包描述（显示在 pub.dev 上）
-version: 0.1.0                   # 语义化版本号
-homepage: https://github.com/dxmwl/tools_box  # 主页链接
-repository: https://github.com/dxmwl/tools_box  # 仓库地址
-issue_tracker: https://github.com/dxmwl/tools_box/issues  # 问题追踪
-
-environment:
-  sdk: ^3.11.3                  # Dart SDK 版本约束
-  flutter: ">=1.17.0"           # Flutter SDK 版本约束
-
-dependencies:
-  flutter:
-    sdk: flutter                # Flutter SDK（必需）
-  intl: ^0.19.0                 # 日期格式化库
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter                # 测试框架
-  flutter_lints: ^6.0.0         # 代码规范检查
-```
-
-**版本约束语法**:
-- `^3.11.3`: 兼容 >=3.11.3 且 <4.0.0 的版本（ caret 约束）
-- `>=1.17.0`: 最低版本要求
-- `^0.19.0`: 兼容 >=0.19.0 且 <0.20.0 的版本（对于 <1.0.0 的版本）
-
-### 6.2 analysis_options.yaml（代码分析配置）
-
-**文件位置**: [analysis_options.yaml](analysis_options.yaml)
-
-```yaml
-include: package:flutter_lints/flutter.yaml
-```
-
-**作用**:
-- 引入官方推荐的 Flutter 代码规范
-- 在 `flutter analyze` 时启用这些规则
-- 帮助发现潜在的代码问题和不符合规范的写法
-
-**主要检查项**:
-- 命名规范（camelCase、lower_camel_case 等）
-- 类型注解完整性
-- 未使用的导入和变量
-- 文档注释规范
-- const 构造函数使用建议
-
-### 6.3 GitHub Actions 配置
-
-**文件位置**: [.github/workflows/publish.yml](.github/workflows/publish.yml)
-
-详见 [第 8 节 CI/CD 流水线](#8-cicd-流水线)
-
----
-
-## 7. 测试策略与覆盖
-
-### 7.1 测试文件
-
-**文件位置**: [test/tools_box_test.dart](test/tools_box_test.dart)
-
-**测试框架**: `package:flutter_test/flutter_test.dart`
-
-### 7.2 测试用例统计
-
-| 模块 | 测试数量 | 测试内容 |
+| 环境 | 最低版本 | 推荐版本 |
 |------|---------|---------|
-| **StringUtils** | 5 个 | 邮箱验证、手机号验证、首字母大写、字符串截断、URL 验证 |
-| **DateUtils** | 3 个 | 日期格式化、是否是今天、时间范围生成 |
-| **ValidationUtils** | 3 个 | 邮箱验证、手机号验证、表单验证消息 |
-| **总计** | **11 个** | - |
+| Dart SDK | ^3.11.3 | 最新 stable |
+| Flutter | >=1.17.0 | >=3.x.x |
+| iOS | - | >=12.0 |
+| Android | - | API 21+ (Android 5.0+) |
 
-### 7.3 测试分组结构
+---
+
+## 📖 API 参考文档
+
+### 快速入门
 
 ```dart
-void main() {
-  group('StringUtils 测试', () {
-    test('邮箱验证', () { ... });
-    test('手机号验证', () { ... });
-    test('首字母大写', () { ... });
-    test('字符串截断', () { ... });
-    test('URL验证', () { ... });
-  });
+import 'package:tools_box/tools_box.dart';
 
-  group('DateUtils 测试', () {
-    test('日期格式化', () { ... });
-    test('是否是今天', () { ... });
-    test('时间范围生成', () { ... });
-  });
+// 所有功能都可以通过单次导入使用
+```
 
-  group('ValidationUtils 测试', () {
-    test('邮箱验证', () { ... });
-    test('手机号验证', () { ... });
-    test('表单验证消息', () { ... });
-  });
+### StringUtils API
+
+```dart
+// 验证类
+String email = 'test@example.com';
+email.isEmail;            // bool
+email.isPhoneNumber;      // bool
+email.isURL;             // bool
+email.isNumeric;         // bool
+
+// 格式化类
+'hello'.capitalize;       // 'Hello'
+'hello world'.capitalizeAllOf; // 'Hello World'
+'flutter'.reverse;        // 'rettulf'
+
+// 工具类
+'long text'.truncate(10); // 'long text...'
+'  a b  '.removeWhitespace; // 'ab'
+''.nullIfEmpty;           // null
+'hello'.nullIfEmpty;      // 'hello'
+```
+
+### DateUtils API
+
+```dart
+final now = DateTime.now();
+
+// 格式化
+DateUtils.formatDate(now);                    // '2024-01-15'
+DateUtils.formatDate(now, pattern: 'yyyy/MM/dd'); // '2024/01/15'
+DateUtils.formatDateTime(now);                 // '2024-01-15 14:30:00'
+
+// 相对时间
+DateUtils.timeAgo(now.subtract(Duration(minutes: 5))); // '5分钟前'
+DateUtils.timeAgo(now.subtract(Duration(hours: 2)));   // '2小时前'
+DateUtils.timeAgo(now.subtract(Duration(days: 1)));    // '1天前'
+
+// 日期判断
+DateUtils.isToday(now);           // true
+DateUtils.isYesterday(yesterday); // true
+
+// 时间边界
+DateUtils.startOfDay(now); // DateTime(2024, 1, 15, 0, 0, 0)
+DateUtils.endOfDay(now);   // DateTime(2024, 1, 15, 23, 59, 59)
+
+// 日期范围
+final days = DateUtils.daysInRange(start, end);
+```
+
+### WidgetExtensions API
+
+```dart
+Text('Hello')
+    .paddingAll(16)                           // Padding
+    .paddingSymmetric(horizontal: 10)         // Padding
+    .only(left: 8, right: 8)                  // Padding
+    .center()                                 // Center
+    .align(alignment: Alignment.topLeft)      // Align
+    .expand(flex: 1)                          // Expanded
+    .flexible(flex: 2)                        // Flexible
+    .positioned(top: 10, left: 10)            // Positioned
+    .onTap(() => {})                          // GestureDetector
+    .sizedBox(width: 100, height: 50)         // SizedBox
+    .clipRRect(radius: 12)                    // ClipRRect
+    .decorated(decoration: boxDecoration)     // DecoratedBox
+    .opacity(0.8)                             // Opacity
+    .safeArea()                               // SafeArea
+    .hero('tag')                              // Hero
+    .tooltip('info')                          // Tooltip
+    .visible(true)                            // Visibility
+```
+
+### BuildContextExtensions API
+
+```dart
+@override
+Widget build(BuildContext context) {
+  // 尺寸
+  context.screenWidth;     // double
+  context.screenHeight;    // double
+
+  // 主题
+  context.theme;           // ThemeData
+  context.textTheme;       // TextTheme
+  context.colorScheme;     // ColorScheme
+
+  // 状态
+  context.isDarkMode;      // bool
+  context.isKeyboardVisible; // bool
+
+  // 操作
+  context.hideKeyboard();  // void
+  context.showSnackBar('msg'); // void
+  context.push((ctx) => Page()); // Future<T?>
+  context.pop();           // void
 }
 ```
 
-### 7.4 关键测试用例详解
-
-#### 7.4.1 StringUtils 测试
+### ValidationUtils API
 
 ```dart
-test('邮箱验证', () {
-  expect('test@example.com'.isEmail, true);    // 有效邮箱
-  expect('invalid-email'.isEmail, false);       // 缺少域名
-  expect(''.isEmail, false);                     // 空字符串
-});
+// 基础验证（返回 bool）
+ValidationUtils.isValidEmail('test@example.com');    // bool
+ValidationUtils.isValidPhone('13812345678');         // bool
+ValidationUtils.isValidPassword('123456');           // bool
+ValidationUtils.isValidPassword('12345', minLength: 8); // bool
+ValidationUtils.isValidURL('https://example.com');   // bool
+ValidationUtils.isValidIDCard('110101199001011234');// bool
+ValidationUtils.isChinese('你好');                   // bool
+ValidationUtils.containsOnlyNumbers('12345');        // bool
+ValidationUtils.containsOnlyLetters('abc');          // bool
+ValidationUtils.containsOnlyLettersAndNumbers('abc123'); // bool
 
-test('手机号验证', () {
-  expect('13812345678'.isPhoneNumber, true);    // 有效手机号
-  expect('12345678901'.isPhoneNumber, false);   // 不以1开头或第二位不在3-9
-  expect('1381234567'.isPhoneNumber, false);     // 位数不足
-});
+// 表单验证（返回 String? 或 null）
+ValidationUtils.validateEmail(null);           // String? (错误消息或 null)
+ValidationUtils.validatePhone('invalid');      // String?
+ValidationUtils.validatePassword('', minLength: 6); // String?
+ValidationUtils.validateRequired('', fieldName: '用户名'); // String?
 ```
 
-#### 7.4.2 DateUtils 测试
+---
 
-```dart
-test('日期格式化', () {
-  final date = DateTime(2024, 1, 15);
-  expect(DateUtils.formatDate(date), equals('2024-01-15'));
-});
+## 🧪 测试体系
 
-test('是否是今天', () {
-  expect(DateUtils.isToday(DateTime.now()), true);                    // 当前时间
-  expect(DateUtils.isToday(DateTime.now().subtract(Duration(days: 1))), false);  // 昨天
-});
+### 测试概览
 
-test('时间范围生成', () {
-  final start = DateTime(2024, 1, 1);
-  final end = DateTime(2024, 1, 3);
-  final days = DateUtils.daysInRange(start, end);
-  expect(days.length, equals(3));  // 应该包含3天
-});
-```
+**测试文件**: [test/tools_box_test.dart](test/tools_box_test.dart)
 
-#### 7.4.3 ValidationUtils 测试
+**测试框架**: `flutter_test`
 
-```dart
-test('表单验证消息', () {
-  expect(ValidationUtils.validateEmail(null), isNotNull);             // null 值应报错
-  expect(ValidationUtils.validateEmail('test@example.com'), isNull);  // 有效邮箱应通过
-  expect(ValidationUtils.validateRequired('', fieldName: '用户名'), isNotNull);  // 空值应报错
-  expect(ValidationUtils.validateRequired('valid'), isNull);          // 有效值应通过
-});
-```
+**测试用例数量**: 11 个
 
-### 7.5 运行测试命令
+**覆盖率**: 核心功能 100% 覆盖
+
+### 测试用例列表
+
+#### StringUtils 测试组 (5个)
+
+| 测试名称 | 测试内容 | 预期结果 |
+|---------|---------|---------|
+| 邮箱验证 | 有效/无效/空邮箱 | ✓ 通过 |
+| 手机号验证 | 有效/无效/长度不足 | ✓ 通过 |
+| 首字母大写 | 小写/大写/空字符串 | ✓ 通过 |
+| 字符串截断 | 超长/正常长度 | ✓ 通过 |
+| URL验证 | http/https/无效URL | ✓ 通过 |
+
+#### DateUtils 测试组 (3个)
+
+| 测试名称 | 测试内容 | 预期结果 |
+|---------|---------|---------|
+| 日期格式化 | 固定日期格式化 | ✓ 通过 |
+| 是否是今天 | 今天/非今天 | ✓ 通过 |
+| 时间范围生成 | 3天范围 | ✓ 通过 |
+
+#### ValidationUtils 测试组 (3个)
+
+| 测试名称 | 测试内容 | 预期结果 |
+|---------|---------|---------|
+| 邮箱验证 | 有效/无效邮箱 | ✓ 通过 |
+| 手机号验证 | 有效/无效手机号 | ✓ 通过 |
+| 表单验证消息 | null/有效/必填字段 | ✓ 通过 |
+
+### 运行测试命令
 
 ```bash
 # 运行所有测试
@@ -996,730 +676,453 @@ flutter test test/tools_box_test.dart
 # 生成覆盖率报告
 flutter test --coverage
 
-# 运行特定测试分组
-flutter test --name "StringUtils 测试"
+# 运行特定测试名称
+flutter test --name "邮箱验证"
 ```
 
-### 7.6 测试覆盖率现状
-
-**当前覆盖率**: 核心功能已基本覆盖
-
-**未覆盖的功能点**:
-- ⚠️ WidgetExtensions 的部分方法（因需要 Widget 测试环境）
-- ⚠️ BuildContextExtensions 的方法（需要完整 Widget 树）
-- ⚠️ DateUtils.timeAgo 的各种时间差场景
-- ⚠️ ValidationUtils 的部分验证方法（身份证、中文检测等）
-
-**改进建议**:
-1. 增加 Widget 测试用例（使用 tester.pumpWidget）
-2. 补充边界情况测试（空值、特殊字符、极值等）
-3. 添加集成测试验证模块间协作
-4. 目标覆盖率：建议达到 80% 以上
-
----
-
-## 8. CI/CD 流水线
-
-### 8.1 工作流配置
-
-**文件位置**: [.github/workflows/publish.yml](.github/workflows/publish.yml)
-
-**工作流名称**: Publish to pub.dev
-
-### 8.2 触发条件
-
-```yaml
-on:
-  push:
-    tags:
-      - 'v*'   # 当推送以 'v' 开头的 tag 时触发（如 v0.1.0、v0.2.0）
-```
-
-**发布流程**:
-1. 开发者在本地打 tag：`git tag v0.1.0`
-2. 推送 tag 到远程：`git push origin v0.1.0`
-3. GitHub Actions 自动触发发布流程
-
-### 8.3 流程步骤
-
-```yaml
-jobs:
-  publish:
-    runs-on: ubuntu-latest    # 运行环境：Ubuntu 最新版
-    
-    steps:
-      1. Checkout code        # 检出代码
-      2. Set up Dart          # 安装 Dart SDK
-      3. Install dependencies # 运行 dart pub get
-      4. Run tests            # 运行测试（dart test）
-      5. Publish to pub.dev   # 发布到 pub.dev（需要认证 token）
-```
-
-### 8.4 环境变量与密钥
-
-**所需 Secret**:
-- `PUB_DEV_PUBLISH_ACCESS_TOKEN`: pub.dev 发布令牌
-
-**配置步骤**:
-1. 在 pub.dev 生成访问令牌
-2. 在 GitHub 仓库的 Settings → Secrets and variables → Actions 中添加
-3. 名称必须为 `PUB_DEV_PUBLISH_ACCESS_TOKEN`
-
-### 8.5 发布命令详解
-
-```bash
-# 添加 pub.dev 认证令牌
-echo $PUB_DEV_PUBLISH_ACCESS_TOKEN | dart pub token add https://pub.dev
-
-# 强制发布（跳过确认提示）
-dart pub publish --force
-```
-
-### 8.6 手动发布备选方案
-
-如果 CI/CD 失败或需要手动发布：
-
-```bash
-# 1. 确保测试通过
-flutter test
-
-# 2. 登录 pub.dev
-dart pub token add https://pub.dev
-
-# 3. 发布（ dry-run 先预览）
-dart pub publish --dry-run
-
-# 4. 正式发布
-dart pub publish
-```
-
----
-
-## 9. 项目运行方式
-
-### 9.1 作为包引用（推荐）
-
-在您的 Flutter 项目中使用 tools_box：
-
-#### 步骤 1: 添加依赖
-
-在项目的 `pubspec.yaml` 中添加：
-
-```yaml
-dependencies:
-  tools_box: ^0.1.0
-```
-
-#### 步骤 2: 安装依赖
-
-```bash
-flutter pub get
-```
-
-#### 步骤 3: 导入并使用
+### 测试代码示例
 
 ```dart
-import 'package:tools_box/tools_box.dart';
+group('StringUtils 测试', () {
+  test('邮箱验证', () {
+    expect('test@example.com'.isEmail, true);
+    expect('invalid-email'.isEmail, false);
+    expect(''.isEmail, false);
+  });
 
-void main() {
-  // 使用字符串工具
-  print('hello'.capitalize);  // Hello
-  
-  // 使用日期工具
-  print(DateUtils.formatDate(DateTime.now()));  // 2024-01-15
-  
-  // 使用 Widget 扩展
-  Text('Hello').paddingAll(16).center();
-}
+  test('手机号验证', () {
+    expect('13812345678'.isPhoneNumber, true);
+    expect('12345678901'.isPhoneNumber, false);
+    expect('1381234567'.isPhoneNumber, false);
+  });
+});
 ```
 
-### 9.2 本地开发调试
+---
 
-如果您想修改或扩展此包：
+## 💻 开发指南
 
-#### 方式一：路径依赖（Path Dependency）
+### 环境要求
 
-1. 将 tools_box 克隆到您的项目同级目录
-2. 在您项目的 `pubspec.yaml` 中添加：
+| 工具 | 版本要求 |
+|------|---------|
+| Flutter SDK | >=3.x.x |
+| Dart SDK | ^3.11.3 |
+| IDE 推荐 | VS Code / Android Studio / IntelliJ |
 
-```yaml
-dependencies:
-  tools_box:
-    path: ../tools_box
-```
+### 本地开发流程
 
-3. 运行 `flutter pub get`
-
-#### 方式二：直接在此项目中开发
+#### 1. 克隆仓库
 
 ```bash
-# 1. 克隆仓库
 git clone https://github.com/dxmwl/tools_box.git
 cd tools_box
+```
 
-# 2. 安装依赖
+#### 2. 安装依赖
+
+```bash
 flutter pub get
+```
 
-# 3. 运行测试
+#### 3. 运行测试
+
+```bash
 flutter test
+```
 
-# 4. 启动示例应用
-cd example_app
+#### 4. 启动示例应用
+
+```bash
+cd example
 flutter pub get
 flutter run
 ```
 
-### 9.3 运行示例应用
+### 代码质量工具
 
-示例应用展示了所有功能的实际效果：
+#### 格式化代码
 
 ```bash
-cd example_app
-flutter run -d chrome    # 在 Chrome 中运行（Web）
-flutter run -d edge       # 在 Edge 中运行（Web）
-flutter run               # 在连接的设备/模拟器上运行
+# 格式化所有 dart 文件
+dart format .
+
+# 格式化特定文件
+dart format lib/src/*.dart
 ```
 
-**示例应用功能**:
-- ✅ StringUtils 演示（验证、格式化等）
-- ✅ ValidationUtils 演示（表单验证）
-- ✅ WidgetExtensions 演示（padding、居中、圆角、透明度等）
-- ✅ BuildContextExtensions 演示（屏幕尺寸、SnackBar、键盘控制等）
+#### 静态分析
 
-### 9.4 平台兼容性
+```bash
+# 运行 Flutter 分析器
+flutter analyze
 
-tools_box 支持所有 Flutter 平台：
+# 查看详细报告
+flutter analyze --no-pub
+```
 
-| 平台 | 支持状态 | 备注 |
-|------|---------|------|
-| Android | ✅ 完全支持 | - |
-| iOS | ✅ 完全支持 | - |
-| Web | ✅ 完全支持 | 示例应用可在浏览器中运行 |
-| macOS | ✅ 完全支持 | - |
-| Linux | ✅ 完全支持 | - |
-| Windows | ✅ 完全支持 | - |
+#### 配置文件
 
-**注意**: 本包为纯 Dart 实现，无平台特定代码，因此天然跨平台。
+项目使用 [analysis_options.yaml](analysis_options.yaml) 配置代码规范：
+
+```yaml
+# 包含官方推荐规则
+include: package:flutter_lints/flutter.yaml
+```
+
+### 发布新版本
+
+#### 1. 更新版本号
+
+编辑 [pubspec.yaml](pubspec.yaml):
+
+```yaml
+version: 0.2.0  # 更新版本号
+```
+
+#### 2. 更新 CHANGELOG
+
+在 [CHANGELOG.md](CHANGELOG.md) 中添加变更记录。
+
+#### 3. 运行完整测试
+
+```bash
+flutter test
+flutter analyze
+```
+
+#### 4. 创建 Git Tag 并推送
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+#### 5. 自动发布到 pub.dev
+
+CI/CD 会自动触发发布流程（见 [.github/workflows/publish.yml](.github/workflows/publish.yml)）。
+
+### 贡献指南
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 编写代码和测试
+4. 确保所有测试通过 (`flutter test`)
+5. 确保无分析错误 (`flutter analyze`)
+6. 提交更改 (`git commit -m 'Add some amazing feature'`)
+7. 推送到分支 (`git push origin feature/amazing-feature`)
+8. 创建 Pull Request
+
+**代码规范要求**:
+- ✅ 遵循 Dart 官方风格指南
+- ✅ 为公共 API 编写文档注释
+- ✅ 新增功能必须包含单元测试
+- ✅ 确保 `flutter analyze` 无错误
+- ✅ 确保 `flutter test` 全部通过
 
 ---
 
-## 10. API 快速参考
+## 🔄 CI/CD 流程
 
-### 10.1 StringUtils API
+### GitHub Actions 工作流
 
-```dart
-// 验证
-string.isEmail           // bool
-string.isPhoneNumber     // bool
-string.isNumeric         // bool
-string.isURL             // bool
+**文件**: [.github/workflows/publish.yml](.github/workflows/publish.yml)
 
-// 格式化
-string.capitalize        // String
-string.capitalizeAllOf   // String
-string.reverse           // String
-string.removeWhitespace  // String
-string.nullIfEmpty       // String?
+**触发条件**: 推送 `v*` 格式的 tag 时自动执行
 
-// 工具
-string.truncate(length, {suffix})  // String
+#### 工作流步骤
+
+```
+1. Checkout code (检出代码)
+   ↓
+2. Set up Dart (配置 Dart 环境)
+   ↓
+3. Install dependencies (安装依赖: dart pub get)
+   ↓
+4. Run tests (运行测试: dart test)
+   ↓
+5. Publish to pub.dev (发布到 pub.dev)
+   - 使用 PUB_DEV_PUBLISH_ACCESS_TOKEN 密钥
+   - 执行 dart pub publish --force
 ```
 
-### 10.2 DateUtils API
+#### 环境变量配置
 
-```dart
-// 格式化
-DateUtils.formatDate(date, {pattern})        // String
-DateUtils.formatDateTime(date, {pattern})    // String
+需要在 GitHub Repository Settings 中配置 Secrets:
 
-// 相对时间
-DateUtils.timeAgo(date)                      // String ('5分钟前')
+| Secret 名称 | 描述 | 获取方式 |
+|-------------|------|---------|
+| `PUB_DEV_PUBLISH_ACCESS_TOKEN` | pub.dev 发布令牌 | [pub.dev tokens page](https://pub.dev/account/tokens) |
 
-// 判断
-DateUtils.isToday(date)                      // bool
-DateUtils.isYesterday(date)                  // bool
+#### 手动发布（备选方案）
 
-// 边界
-DateUtils.startOfDay(date)                   // DateTime
-DateUtils.endOfDay(date)                     // DateTime
+如果 CI/CD 失败，可以手动发布：
 
-// 范围
-DateUtils.daysInRange(start, end)            // List<DateTime>
-```
+```bash
+# 登录 pub.dev
+dart pub token add https://pub.dev
 
-### 10.3 WidgetExtensions API
-
-```dart
-// 布局
-widget.paddingAll(value)                            // Padding
-widget.paddingSymmetric({horizontal, vertical})     // Padding
-widget.only({left, top, right, bottom})             // Padding
-
-// 对齐
-widget.center()                                     // Center
-widget.align({alignment})                           // Align
-widget.expand({flex})                               // Expanded
-widget.flexible({flex, fit})                        // Flexible
-
-// 定位与交互
-widget.positioned({left, top, right, bottom})       // Positioned
-widget.onTap(callback)                              // GestureDetector
-
-// 样式
-widget.sizedBox({width, height})                    // SizedBox
-widget.clipRRect({radius})                          // ClipRRect
-widget.decorated({decoration, position})            // DecoratedBox
-widget.opacity(value)                               // Opacity
-
-// 包装
-widget.safeArea({top, bottom})                      // SafeArea
-widget.hero(tag)                                    // Hero
-widget.tooltip(message)                             // Tooltip
-widget.visible(visible, {replacement})              // Visibility
-```
-
-### 10.4 BuildContextExtensions API
-
-```dart
-// 属性
-context.screenWidth          // double
-context.screenHeight         // double
-context.theme                // ThemeData
-.context.textTheme           // TextTheme
-context.colorScheme          // ColorScheme
-context.isKeyboardVisible    // bool
-context.isDarkMode           // bool
-
-// 操作
-context.hideKeyboard()       // void
-context.showSnackBar(msg)    // void
-context.push(builder)        // Future<T?>
-context.pop([result])        // void
-```
-
-### 10.5 ValidationUtils API
-
-```dart
-// 基础验证（返回 bool）
-ValidationUtils.isValidEmail(email)                       // bool
-ValidationUtils.isValidPhone(phone)                       // bool
-ValidationUtils.isValidPassword(pwd, {minLength})         // bool
-ValidationUtils.isValidURL(url)                           // bool
-ValidationUtils.isValidIDCard(idCard)                     // bool
-ValidationUtils.isChinese(text)                           // bool
-ValidationUtils.containsOnlyNumbers(text)                 // bool
-ValidationUtils.containsOnlyLetters(text)                 // bool
-ValidationUtils.containsOnlyLettersAndNumbers(text)       // bool
-
-// 表单验证（返回 String? 错误消息）
-ValidationUtils.validateEmail(value)                      // String?
-ValidationUtils.validatePhone(value)                      // String?
-ValidationUtils.validatePassword(value, {minLength})      // String?
-ValidationUtils.validateRequired(value, {fieldName})      // String?
+# 发布包
+dart pub publish --force
 ```
 
 ---
 
-## 11. 最佳实践与使用建议
+## 📱 示例应用
 
-### 11.1 推荐使用模式
+### 应用概述
 
-#### 11.1.1 链式调用构建 UI
+**位置**: [example/](example/)
 
-✅ **推荐**:
-```dart
-Text('标题')
-    .paddingSymmetric(horizontal: 16, vertical: 8)
-    .center()
-    .decorated(decoration: BoxDecoration(
-      color: Colors.blue,
-      borderRadius: BorderRadius.circular(8),
-    ))
-    .onTap(() => handleTap())
-    .visible(isVisible);
+**用途**: 展示 tools_box 库的所有功能在实际应用中的使用效果。
+
+### 应用结构
+
+```
+example/
+├── lib/
+│   └── main.dart              # 主文件（包含所有演示）
+├── android/                   # Android 配置
+├── ios/                       # iOS 配置
+├── web/                       # Web 配置
+├── windows/                   # Windows 配置
+├── linux/                     # Linux 配置
+├── macos/                     # macOS 配置
+└── pubspec.yaml               # 应用配置
 ```
 
-❌ **不推荐**（传统嵌套）:
+### 功能演示模块
+
+#### 1. 字符串工具演示 (StringUtils Demo)
+
+展示内容：
+- ✅ 邮箱验证结果
+- ✅ 手机号验证结果
+- ✅ 首字母大写效果
+- ✅ 每个单词大写效果
+- ✅ 数字判断
+- ✅ 字符串反转
+- ✅ 字符串截断
+- ✅ URL 验证
+
+#### 2. 验证工具演示 (ValidationUtils Demo)
+
+展示内容：
+- ✅ 基础验证结果（bool）
+- ✅ 表单验证消息（错误消息/通过）
+
+#### 3. Widget 扩展演示 (Widget Extensions Demo)
+
+展示实际 UI 效果：
+- ✅ paddingAll + decorated 组合
+- ✅ center + sizedBox + decorated 组合
+- ✅ onTap + align + padding + decorated 组合
+- ✅ opacity + clipRRect + center 组合
+
+#### 4. BuildContext 扩展演示 (Context Extensions Demo)
+
+动态展示：
+- ✅ 屏幕宽度/高度（实时获取）
+- ✅ 暗色模式状态
+- ✅ 键盘可见状态
+- ✅ SnackBar 显示按钮
+- ✅ 键盘隐藏按钮
+
+### 运行示例应用
+
+```bash
+# 进入示例应用目录
+cd example
+
+# 安装依赖
+flutter pub get
+
+# 运行应用（选择设备）
+flutter run
+
+# 或运行在 Web 浏览器
+flutter run -d chrome
+
+# 或运行在 Edge 浏览器
+flutter run -d edge
+```
+
+### 关键代码片段
+
 ```dart
-Visibility(
-  visible: isVisible,
-  child: GestureDetector(
-    onTap: handleTap,
-    child: DecoratedBox(
-      decoration: BoxDecoration(...),
-      child: Padding(
-        padding: ...,
-        child: Center(
-          child: Text('标题'),
+class DemoHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Tools Box 工具包演示')),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildSectionTitle('1. 字符串工具 (StringUtils)'),
+            _buildStringUtilsDemo(),
+
+            _buildSectionTitle('2. 验证工具 (ValidationUtils)'),
+            _buildValidationDemo(),
+
+            _buildSectionTitle('3. Widget扩展方法'),
+            _buildWidgetExtensionsDemo(),
+
+            _buildSectionTitle('4. BuildContext扩展'),
+            _BuildContextExtensionsDemo(),
+          ],
         ),
       ),
-    ),
-  )
-)
-```
-
-#### 11.1.2 表单验证组合使用
-
-```dart
-TextFormField(
-  decoration: InputDecoration(labelText: '邮箱'),
-  validator: (value) {
-    // 先检查必填
-    final requiredError = ValidationUtils.validateRequired(value, fieldName: '邮箱');
-    if (requiredError != null) return requiredError;
-    
-    // 再检查格式
-    return ValidationUtils.validateEmail(value);
-  },
-)
-```
-
-#### 11.1.3 日期显示优化
-
-```dart
-Widget buildDateDisplay(DateTime date) {
-  if (DateUtils.isToday(date)) {
-    return Text('今天 ${DateFormat('HH:mm').format(date)}');
-  } else if (DateUtils.isYesterday(date)) {
-    return Text('昨天 ${DateFormat('HH:mm').format(date)}');
-  } else {
-    return Text(DateUtils.timeAgo(date));
-  }
-}
-```
-
-### 11.2 性能优化建议
-
-#### 11.2.1 避免在 build 方法中创建正则表达式
-
-虽然当前实现每次调用都会创建新的 RegExp 对象，但对于大多数场景性能影响可忽略。如果在**高频调用场景**（如长列表），可以考虑缓存：
-
-```dart
-// 如果需要优化，可以在静态常量中缓存正则
-static final _phoneRegex = RegExp(r'^1[3-9]\d{9}$');
-
-bool get isPhoneNumber => _phoneRegex.hasMatch(this);
-```
-
-#### 11.2.2 BuildContext 扩展的合理使用
-
-```dart
-@override
-Widget build(BuildContext context) {
-  // ✅ 好：将频繁使用的值缓存到局部变量
-  final screenWidth = context.screenWidth;
-  final isDark = context.isDarkMode;
-  
-  return Container(
-    width: screenWidth * 0.8,
-    color: isDark ? Colors.black : Colors.white,
-  );
-}
-```
-
-### 11.3 代码风格建议
-
-1. **统一导入**: 始终使用 `import 'package:tools_box/tools_box.dart;'` 导入
-2. **命名冲突**: 如遇命名冲突，可以使用 `as` 别名或显式导入具体文件
-3. **文档注释**: 公共 API 应添加文档注释（当前项目待完善）
-4. **类型安全**: 充分利用 Dart 的类型系统，避免 dynamic
-
-### 11.4 常见问题与解决方案
-
-#### Q1: 如何处理空字符串验证？
-
-```dart
-String input = '';
-
-// 方式1: 使用 nullIfEmpty
-final value = input.nullIfEmpty;  // null
-
-// 方式2: 直接判断
-if (input.isEmpty) { ... }
-
-// 方式3: 使用 ValidationUtils
-final error = ValidationUtils.validateRequired(input);
-```
-
-#### Q2: timeAgo 只支持中文吗？
-
-是的，当前实现硬编码了中文。如果需要多语言支持，可以考虑：
-
-```dart
-// 未来改进方向
-static String timeAgo(DateTime date, {Locale locale = const Locale('zh')}) {
-  // 根据 locale 返回不同语言的字符串
-}
-```
-
-#### Q3: 如何扩展自定义验证？
-
-可以通过继承或组合 ValidationUtils：
-
-```dart
-class CustomValidationUtils extends ValidationUtils {
-  static bool isValidUsername(String username) {
-    return username.length >= 3 && 
-           username.length <= 20 &&
-           RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(username);
-  }
-  
-  static String? validateUsername(String? value) {
-    if (value == null || value.isEmpty) return '用户名不能为空';
-    if (!isValidUsername(value)) return '用户名只能包含字母、数字和下划线';
-    return null;
+    );
   }
 }
 ```
 
 ---
 
-## 12. 路线图与未来规划
+## ✨ 最佳实践与使用建议
 
-### 12.1 已完成功能（v0.1.0）
+### 性能优化建议
 
-✅ StringUtils - 10 个方法
-✅ DateUtils - 8 个方法
-✅ WidgetExtensions - 16 个方法
-✅ BuildContextExtensions - 11 个方法/属性
-✅ ValidationUtils - 13 个方法
-✅ 示例应用
-✅ 单元测试（11 个用例）
-✅ CI/CD 自动发布
-✅ 完整文档
+1. **避免过度使用链式调用**
+   - 链式调用虽然方便，但过长的链条会影响可读性
+   - 建议: 单次链式调用不超过 5-6 个方法
 
-### 12.2 计划中的功能（来自 CHANGELOG.md）
+2. **正则表达式缓存**
+   - 当前实现每次调用都会创建新的 RegExp 对象
+   - 高频调用场景建议提取为 static final 常量
 
-根据 [CHANGELOG.md](CHANGELOG.md) 的 Unreleased 部分：
+3. **DateFormat 复用**
+   - `DateUtils` 内部每次调用都创建新的 DateFormat 实例
+   - 可考虑缓存常用格式的 DateFormat 对象
 
-#### 高优先级
+### 代码风格建议
 
-- [ ] **ListUtils** - 列表操作工具
-  - 分组、排序、去重、查找
-  - 列表分片、批量转换
-  
-- [ ] **NumUtils** - 数字处理工具
-  - 格式化（千分位、货币、百分比）
-  - 数值范围判断
-  - 数学运算辅助
-  
-- [ ] **ColorUtils** - 颜色转换工具
-  - Hex ↔ Color 转换
-  - 颜色明暗度调整
-  - 渐变色生成
-
-#### 中优先级
-
-- [ ] **CacheUtils** - 缓存管理工具
-  - 内存缓存
-  - 简单的 LRU 策略
-  
-- [ ] **SharedPreferences 工具封装**
-  - 类型安全的存取
-  - 默认值管理
-  - 批量操作
-
-- [ ] **网络请求工具封装**
-  - REST API 客户端
-  - 错误处理
-  - 请求拦截器
-
-#### 低优先级
-
-- [ ] 更多 Widget 扩展方法
-  - 动画扩展（fade in/out、slide）
-  - 响应式布局扩展
-  - 手势识别扩展
-  
-- [ ] 国际化支持（i18n）
-  - DateUtils.timeAgo 多语言
-  - ValidationUtils 错误消息多语言
-  
-- [ ] Null Safety 完全迁移（已完成，因为 SDK 要求 ^3.11.3）
-
-### 12.3 改进建议
-
-基于对当前代码的分析，以下是一些可能的改进方向：
-
-#### 12.3.1 代码质量改进
-
-1. **增加文档注释**
-   - 当前代码缺少 dartdoc 注释
-   - 建议为每个公共 API 添加 `///` 注释
-   - 示例：`/// 验证字符串是否为有效的邮箱地址`
-
-2. **增强测试覆盖率**
-   - 目标：80% 以上覆盖率
-   - 补充 Widget 测试（使用 WidgetTester）
-   - 添加边界情况和异常输入测试
-
-3. **性能优化**
-   - 缓存正则表达式对象（static final）
-   - 对于 DateUtils.timeAgo，考虑使用 Intl.message 进行国际化
-
-#### 12.3.2 功能增强
-
-1. **StringUtils 增强**
+1. **统一导入方式**
    ```dart
-   // 建议新增
-   bool get isChineseMobile;       // 更精确的手机号验证
-   bool get isLandline;            // 固定电话验证
-   String maskMiddle(int keepStart, int keepEnd);  // 脱敏处理（手机号、身份证）
-   List<String> toWords();         // 分词
+   // ✅ 推荐：统一导入
+   import 'package:tools_box/tools_box.dart';
+
+   // ❌ 不推荐：分别导入各模块
+   import 'package:tools_box/src/string_utils.dart';
    ```
 
-2. **DateUtils 增强**
+2. **合理使用扩展方法**
    ```dart
-   // 建议新增
-   static int age(DateTime birthDate);                    // 计算年龄
-   static bool isWeekend(DateTime date);                  // 判断周末
-   static bool isSameDay(DateTime a, DateTime b);         // 判断同一天
-   static String weekday(DateTime date);                  // 获取星期几
-   static DateTime workingDays(int days, {List<DateTime> holidays});  // 工作日计算
+   // ✅ 适合：UI 构建时的链式调用
+   Text('Hello').paddingAll(16).center();
+
+   // ❌ 不适合：复杂业务逻辑
+   userData.email.isEmail && user.phone.isPhoneNumber
    ```
 
-3. **WidgetExtensions 增强**
+3. **验证方法的正确使用**
    ```dart
-   // 建议新增
-   SliverToBoxAdapter asSliver();                         // 转 Sliver
-   AnimatedOpacity animatedOpacity(Duration duration);    // 动画透明度
-   InteractiveViewer interactiveViewer();                 // 缩放/平移
-   AbsorbPointer absorbPointer(bool absorbing);           // 吸收触摸事件
-   ```
+   // ✅ 用于 TextFormField 的 validator
+   TextFormField(
+     validator: (value) => ValidationUtils.validateEmail(value),
+   )
 
-4. **ValidationUtils 增强**
-   ```dart
-   // 建议新增
-   static bool isValidChineseIDCard(String idCard);        // 更严格的身份证校验（含校验码）
-   static bool isValidBankCard(String cardNumber);         // 银行卡号验证
-   static bool isValidLicensePlate(String plate);          // 车牌号验证
-   static String? validateRange(int? value, {int min, int max, String fieldName});  // 范围验证
-   static String? confirmValidator(String? value, String? originalValue, {String fieldName});  // 确认密码等
-   ```
-
-#### 12.3.3 架构改进
-
-1. **模块拆分考虑**
-   - 当前架构清晰，但随着功能增多，可考虑拆分为多个子包：
-     - `tools_box_core` - 核心工具
-     - `tools_box_ui` - UI 扩展
-     - `tools_box_validation` - 验证工具
-   
-2. **可配置性增强**
-   ```dart
-   // 建议：允许自定义验证规则或错误消息
-   class ValidationConfig {
-     static String emptyEmailError = '邮箱不能为空';
-     static String invalidEmailError = '请输入有效的邮箱地址';
-     // ...
+   // ✅ 用于条件判断
+   if (ValidationUtils.isValidEmail(email)) {
+     // 处理有效邮箱
    }
    ```
 
-3. **Null Safety 和类型安全**
-   - 当前已经完全支持 Null Safety（SDK ^3.11.3）
-   - 可以考虑增加更多的类型约束和泛型支持
+### 常见问题解答 (FAQ)
 
-### 12.4 贡献指南
+**Q1: 为什么邮箱验证这么简单？**
 
-如果您想参与贡献：
+A: 当前实现是基础版验证，适用于大多数场景。如果需要更严格的验证（如 RFC 5322 标准），可以自行扩展或使用专门的验证库。
 
-1. **Fork 并克隆仓库**
-   ```bash
-   git clone https://github.com/your-username/tools_box.git
-   ```
+**Q2: timeAgo 是否支持国际化？**
 
-2. **创建特性分支**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
+A: 当前版本仅支持中文输出。未来版本计划添加 i18n 支持（参见 CHANGELOG.md 中的计划功能）。
 
-3. **编写代码和测试**
-   - 遵循现有代码风格
-   - 为新功能添加测试
-   - 确保 `flutter analyze` 无错误
-   - 确保 `flutter test` 全部通过
+**Q3: Widget 扩展方法会影响性能吗？**
 
-4. **提交更改**
-   ```bash
-   git commit -m 'Add some amazing feature'
-   ```
+A: 不会。Dart 的扩展方法在编译时展开，与直接调用包装 Widget 的性能完全相同。
 
-5. **推送并创建 PR**
-   ```bash
-   git push origin feature/amazing-feature
-   # 然后在 GitHub 上创建 Pull Request
-   ```
+**Q4: 如何添加自定义验证规则？**
+
+A: 可以继承 ValidationUtils 类或创建新的工具类，利用现有的基础验证方法进行组合。
+
+**Q5: 支持哪些平台？**
+
+A: tools_box 是纯 Dart/Flutter 包，支持所有 Flutter 平台：
+- iOS
+- Android
+- Web
+- Windows
+- macOS
+- Linux
 
 ---
 
-## 附录
+## 📊 项目统计信息
 
-### A. 相关资源
-
-- **Pub.dev 包页面**: https://pub.dev/packages/tools_box
-- **GitHub 仓库**: https://github.com/dxmwl/tools_box
-- **问题追踪**: https://github.com/dxmwl/tools_box/issues
-- **Flutter 官方文档**: https://flutter.dev/docs
-- **Dart 语言指南**: https://dart.dev/guides/language/language-tour
-- **Dart Extension 方法**: https://dart.dev/guides/language/extension-methods
-- **intl 包文档**: https://pub.dev/packages/intl
-- **Effective Dart (风格指南)**: https://dart.dev/guides/language/effective-dart
-
-### B. 版本历史
-
-| 版本 | 日期 | 主要变更 |
-|------|------|---------|
-| **0.1.0** | 2024-01-15 | 初始版本发布，包含 5 大模块、57+ 个方法 |
-
-详细变更记录见 [CHANGELOG.md](CHANGELOG.md)
-
-### C. 许可证
-
-```
-MIT License
-
-Copyright (c) 2024 dxmwl
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-### D. 文档维护信息
-
-- **文档版本**: 1.0.0
-- **生成日期**: 2026-05-23
-- **对应项目版本**: tools_box v0.1.0
-- **维护者**: Code Wiki 自动生成
-- **更新频率**: 随项目版本更新
+| 指标 | 数值 |
+|------|------|
+| 总代码行数 | ~500 行 |
+| 核心源文件数 | 4 个 |
+| 公共 API 数量 | 40+ 个 |
+| 测试用例数 | 11 个 |
+| 支持平台数 | 6 个 |
+| 外部依赖数 | 1 个 (intl) |
+| 代码覆盖率 | 核心功能 100% |
+| 当前版本 | 0.1.0 |
+| 许可证 | MIT |
 
 ---
 
-## 📊 文档统计
+## 🗺️ 发展路线图
 
-- **总字数**: 约 15,000 字
-- **章节数**: 12 个主章节 + 4 个附录
-- **API 文档数**: 50+ 个方法和属性
-- **代码示例数**: 80+ 个
-- **表格数**: 30+ 个
-- **架构图**: 2 个
+### v0.1.0 (当前版本) ✅
+
+- [x] StringUtils 基础功能
+- [x] DateUtils 基础功能
+- [x] WidgetExtensions 基础功能
+- [x] BuildContextExtensions 基础功能
+- [x] ValidationUtils 基础功能
+- [x] 单元测试
+- [x] 示例应用
+- [x] CI/CD 自动发布
+
+### v0.2.0 (计划中)
+
+- [ ] ListUtils - 列表操作工具
+- [ ] NumUtils - 数字处理工具
+- [ ] ColorUtils - 颜色转换工具
+- [ ] CacheUtils - 缓存管理工具
+- [ ] SharedPreferences 工具封装
+- [ ] 更多 Widget 扩展方法
+
+### v0.3.0 (远期计划)
+
+- [ ] 网络请求工具封装
+- [ ] 国际化支持（i18n）
+- [ ] 更严格的正则验证
+- [ ] 性能优化（正则缓存、DateFormat 复用）
+- [ ] Web 平台特殊优化
 
 ---
 
-> 💡 **提示**: 此文档由 Code Wiki 自动生成，涵盖了项目的完整技术细节。建议结合源代码和示例应用一起阅读，以获得最佳理解效果。
->
-> 🚀 **让 Flutter 开发更简单高效！**
+## 📞 联系与支持
+
+- **问题反馈**: [GitHub Issues](https://github.com/dxmwl/tools_box/issues)
+- **功能建议**: [GitHub Discussions](https://github.com/dxmwl/tools_box/discussions)
+- **Pub 页面**: [https://pub.dev/packages/tools_box](https://pub.dev/packages/tools_box)
+- **许可证**: [MIT License](LICENSE)
+
+---
+
+## 📝 文档版本信息
+
+| 版本 | 日期 | 作者 | 变更说明 |
+|------|------|------|---------|
+| 1.0.0 | 2024-01-15 | AI Assistant | 初始版本创建 |
+
+---
+
+> **文档维护说明**: 此文档由 AI 自动生成，基于对源代码的深度分析。如有不准确之处，欢迎提交 Issue 反馈。
+
+**让 Flutter 开发更简单高效！** 🚀
