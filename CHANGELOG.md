@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-05-25
+
+### 🎉 Added - 新增功能
+
+#### PlatformUtils（平台检测工具）
+- ✨ `isWeb` - 是否为 Web 平台
+- ✨ `isAndroid` - 是否为 Android 平台
+- ✨ `isIOS` - 是否为 iOS 平台
+- ✨ `isMacOS` - 是否为 macOS 平台
+- ✨ `isWindows` - 是否为 Windows 平台
+- ✨ `isLinux` - 是否为 Linux 平台
+- ✨ `isFuchsia` - 是否为 Fuchsia 平台
+- ✨ `isMobile` - 是否为移动端（Android 或 iOS）
+- ✨ `isDesktop` - 是否为桌面端（macOS、Windows 或 Linux）
+- ✨ `platformName` - 获取平台名称（英文）
+- ✨ `platformNameCN` - 获取平台名称（中文）
+- ✨ `operatingSystem` - 获取操作系统标识符
+- ✨ `operatingSystemVersion` - 获取操作系统版本号
+- ✨ `currentLocale` - 获取当前系统语言环境
+- ✨ `localHostname` - 获取本地主机名
+- ✨ `numberOfProcessors` - 获取处理器核心数
+- ✨ `pathSeparator` - 获取路径分隔符
+- ✨ `isRelease` / `isDebug` - 运行模式检测
+- ✨ `supportsFileSystem()` - 文件系统支持检测
+- ✨ `supportsNetworkSockets()` - 网络套接字支持检测
+- ✨ `supportsProcessInfo()` - 进程信息支持检测
+- ✨ `runOnPlatform({...})` - 根据平台执行不同回调（无返回值）
+- ✨ `runOnPlatformWithResult<T>({...})` - 根据平台执行不同回调（有返回值）
+
+### 📝 Documentation（文档）
+- 更新 README.md 添加 PlatformUtils API 文档
+- 更新 Features 列表，新增平台检测功能介绍
+
+### 🧪 Testing（测试）
+- 新增 PlatformUtils 测试用例（6 个测试）
+- 覆盖平台判断、名称获取、分支执行等功能
+
+---
+
 ## [0.1.1] - 2026-05-23
 
 ### 🎉 Changed - 变更优化
@@ -163,6 +202,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
-| 0.1.1 | 2024-01-16 | 项目结构优化、文档改进、包发布配置优化 |
+| 0.1.2 | 2024-01-17 | 新增 PlatformUtils 平台检测工具 |
+| 0.1.1 | 2026-05-23 | 项目结构优化、文档改进、包发布配置优化 |
 | 0.1.0 | 2024-01-15 | 初始版本发布，包含基础工具集合 |
 

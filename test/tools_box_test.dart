@@ -73,4 +73,67 @@ void main() {
       expect(ValidationUtils.validateRequired('valid'), isNull);
     });
   });
+
+  group('PlatformUtils 测试', () {
+    test('平台名称不为空', () {
+      expect(PlatformUtils.platformName.isNotEmpty, true);
+      expect(PlatformUtils.platformNameCN.isNotEmpty, true);
+    });
+
+    test('平台名称一致性', () {
+      final name = PlatformUtils.platformName;
+      final nameCN = PlatformUtils.platformNameCN;
+      print('当前平台: $name ($nameCN)');
+      expect(name, isNotNull);
+      expect(nameCN, isNotNull);
+    });
+
+    test('操作系统名称', () {
+      final os = PlatformUtils.operatingSystem;
+      print('操作系统: $os');
+      expect(os, isNotNull);
+      expect(os.isNotEmpty, true);
+    });
+
+    test('平台分类互斥性', () {
+      if (PlatformUtils.isWeb) {
+        expect(PlatformUtils.isAndroid, false);
+        expect(PlatformUtils.isIOS, false);
+        expect(PlatformUtils.isMacOS, false);
+        expect(PlatformUtils.isWindows, false);
+        expect(PlatformUtils.isLinux, false);
+      }
+
+      if (PlatformUtils.isMobile) {
+        expect(PlatformUtils.isDesktop, false);
+        expect(PlatformUtils.isWeb, false);
+      }
+
+      if (PlatformUtils.isDesktop) {
+        expect(PlatformUtils.isMobile, false);
+        expect(PlatformUtils.isWeb, false);
+      }
+    });
+
+    test('runOnPlatform 回调执行', () {
+      var callbackExecuted = false;
+
+      PlatformUtils.runOnPlatform(
+        onWeb: () => callbackExecuted = true,
+        onOther: () => callbackExecuted = true,
+      );
+
+      expect(callbackExecuted, true);
+    });
+
+    test('支持功能检测', () {
+      if (PlatformUtils.isWeb) {
+        expect(PlatformUtils.supportsFileSystem(), false);
+        expect(PlatformUtils.pathSeparator, isNull);
+      } else {
+        expect(PlatformUtils.supportsFileSystem(), true);
+        expect(PlatformUtils.pathSeparator, isNotNull);
+      }
+    });
+  });
 }

@@ -1,6 +1,6 @@
 name: tools_box
 description: "Flutter常用工具集合 - 提供字符串处理、日期格式化、Widget扩展、验证工具等功能"
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/dxmwl/tools_box
 repository: https://github.com/dxmwl/tools_box
 issue_tracker: https://github.com/dxmwl/tools_box/issues

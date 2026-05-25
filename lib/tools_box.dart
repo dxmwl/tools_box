@@ -11,3 +11,4 @@ export 'src/string_utils.dart';
 export 'src/date_utils.dart';
 export 'src/widget_extensions.dart';
 export 'src/validation_utils.dart';
+export 'src/platform_utils.dart';
