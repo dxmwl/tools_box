@@ -5,7 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] - 2024-01-15
+## [0.1.1] - 2026-05-23
+
+### 🎉 Changed - 变更优化
+
+#### 项目结构优化
+- 🔄 将 `example_app` 目录重命名为 `example`（符合 Flutter 包命名规范）
+- ➕ 新增 `.pubignore` 文件（优化 pub.dev 发布配置）
+- 🔧 更新 `.gitignore` 中的路径引用
+- 🔗 更新所有文档中的引用路径（README.md、CODE_WIKI.md）
+
+#### 文档改进
+- 📝 **重新整理 README.md**：采用清晰的 API 列表格式
+  - 每个模块显示源文件链接和 Demo 链接
+  - 使用代码块对齐展示方法名和中文描述
+  - 提升可读性和查找效率
+- 📚 更新 CODE_WIKI.md 中的目录引用
+- ✏️ 更新 CHANGELOG.md 中的示例应用名称
+
+#### 包发布配置
+- ✅ 解决 Pub 验证警告："checked-in files are ignored by .gitignore"
+- ✅ 添加 .pubignore 排除 example 目录（不应发布到 pub.dev）
+- ✅ 优化包结构，遵循 Flutter 包最佳实践
+
+### 📦 Dependencies（依赖）
+- 无新增依赖
+
+---
+
+## [0.1.0] - 2026-05-23
 
 ### 🎉 Added - 新增功能
 
@@ -135,5 +163,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| 0.1.1 | 2024-01-16 | 项目结构优化、文档改进、包发布配置优化 |
 | 0.1.0 | 2024-01-15 | 初始版本发布，包含基础工具集合 |
 
