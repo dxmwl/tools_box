@@ -335,8 +335,8 @@ extension WidgetExtensions on Widget {
   Visibility visible(bool visible, {Widget? replacement}) {
     return Visibility(
       visible: visible,
-      child: this,
       replacement: replacement ?? SizedBox(),
+      child: this,
     );
   }
 }

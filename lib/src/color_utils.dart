@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:ui' show Color;
-import 'package:flutter/painting.dart' show ColorExtension;
 
 /// Utility class for color manipulation and conversion operations.
 ///
@@ -91,9 +90,10 @@ class ColorUtils {
   /// Colors.red.toHex(); // '#FFFF0000'
   /// ```
   static String toHex(Color color, {bool includeAlpha = false, bool includeHash = true}) {
+    final argbValue = color.toARGB32();
     String hex = includeAlpha
-        ? color.value.toRadixString(16).padLeft(8, '0').toUpperCase()
-        : color.value.toRadixString(16).substring(2, 8).toUpperCase();
+        ? argbValue.toRadixString(16).padLeft(8, '0').toUpperCase()
+        : argbValue.toRadixString(16).substring(2, 8).toUpperCase();
     return includeHash ? '#$hex' : hex;
   }
 
@@ -199,7 +199,7 @@ class ColorUtils {
   /// ColorUtils.getRed(Colors.blue); // 0
   /// ColorUtils.getRed(Color(0xFF123456)); // 18
   /// ```
-  static int getRed(Color color) => (color.value >> 16) & 0xFF;
+  static int getRed(Color color) => (color.toARGB32() >> 16) & 0xFF;
 
   /// Extracts the green component from a color as an integer (0-255).
   ///
@@ -214,7 +214,7 @@ class ColorUtils {
   /// ColorUtils.getGreen(Colors.red); // 0
   /// ColorUtils.getGreen(Color(0xFF123456)); // 52
   /// ```
-  static int getGreen(Color color) => (color.value >> 8) & 0xFF;
+  static int getGreen(Color color) => (color.toARGB32() >> 8) & 0xFF;
 
   /// Extracts the blue component from a color as an integer (0-255).
   ///
@@ -229,7 +229,7 @@ class ColorUtils {
   /// ColorUtils.getBlue(Colors.red); // 0
   /// ColorUtils.getBlue(Color(0xFF123456)); // 86
   /// ```
-  static int getBlue(Color color) => color.value & 0xFF;
+  static int getBlue(Color color) => color.toARGB32() & 0xFF;
 
   /// Extracts the alpha (opacity) component from a color as an integer (0-255).
   ///
@@ -244,7 +244,7 @@ class ColorUtils {
   /// ColorUtils.getAlpha(Colors.transparent); // 0
   /// ColorUtils.getAlpha(Color(0x80123456)); // 128
   /// ```
-  static int getAlpha(Color color) => (color.value >> 24) & 0xFF;
+  static int getAlpha(Color color) => (color.toARGB32() >> 24) & 0xFF;
 
   /// Checks if a color is considered dark based on luminance.
   ///

@@ -7,7 +7,6 @@
 // A comprehensive collection of utilities for Flutter development including
 // string manipulation, date formatting, widget extensions, validation tools,
 // platform detection, list operations, number formatting, and color utilities.
-library tools_box;
 
 export 'src/string_utils.dart';
 export 'src/date_utils.dart';
