@@ -2,9 +2,11 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 //
-// Flutter常用工具集合
+// Flutter Utility Toolkit
 //
-// 提供字符串处理、日期格式化、Widget扩展、验证工具等功能
+// A comprehensive collection of utilities for Flutter development including
+// string manipulation, date formatting, widget extensions, validation tools,
+// platform detection, list operations, number formatting, and color utilities.
 library tools_box;
 
 export 'src/string_utils.dart';
@@ -12,3 +14,6 @@ export 'src/date_utils.dart';
 export 'src/widget_extensions.dart';
 export 'src/validation_utils.dart';
 export 'src/platform_utils.dart';
+export 'src/list_utils.dart';
+export 'src/num_utils.dart';
+export 'src/color_utils.dart';
