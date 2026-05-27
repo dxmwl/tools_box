@@ -1,9 +1,7 @@
 name: tools_box
 description: >-
-  A comprehensive Flutter utility toolkit providing string manipulation, date formatting,
-  widget extensions, form validation, and platform detection utilities.
-  Includes convenient extension methods for String, Widget, and BuildContext to
-  streamline Flutter development workflow.
+  A Flutter utility toolkit with string/date formatting, widget extensions,
+  validation tools, platform detection, list/number operations, and color utilities.
 version: 0.1.3
 homepage: https://github.com/dxmwl/tools_box
 repository: https://github.com/dxmwl/tools_box

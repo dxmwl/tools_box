@@ -183,7 +183,7 @@ class ColorUtils {
   /// ```
   static Color withOpacity(Color color, double opacity) {
     assert(opacity >= 0 && opacity <= 1, 'Opacity must be between 0 and 1');
-    return color.withOpacity(opacity);
+    return color.withValues(alpha: opacity);
   }
 
   /// Extracts the red component from a color as an integer (0-255).
